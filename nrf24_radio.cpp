@@ -1,4 +1,3 @@
-
 #include <NRF24L01_trinket.h>
 #include "Wireless.h"
 
