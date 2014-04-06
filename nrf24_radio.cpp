@@ -1,11 +1,11 @@
 #include <NRF24L01_trinket.h>
-#include "Wireless.h"
+#include "nrf24_radio.h"
 
-Wireless::Wireless(void){
+nrf24_radio::nrf24_radio(void){
 
 }
 
-void Wireless::setup(byte csn, byte ce){
+void nrf24_radio::setup(byte csn, byte ce){
 
   radio.setup(csn, ce);
   radio.write_CE(0);
@@ -55,7 +55,7 @@ for(int i = 0; i<32;i++)
 
 }
 
-void Wireless::receiver_start(void){
+void nrf24_radio::receiver_start(void){
 
     //clear buffers
     radio.write_CE(0);
@@ -69,11 +69,11 @@ void Wireless::receiver_start(void){
     delay(200);
 }
 
-void Wireless::receiver_stop(void){
+void nrf24_radio::receiver_stop(void){
     radio.write_CE(0);
 }
 
-byte Wireless::receiver_mode(byte *rec_data){
+byte nrf24_radio::receiver_mode(byte *rec_data){
     
     //radio.write_CE(0);
     radio.send_command(0xFF, status_address);
@@ -110,34 +110,34 @@ byte Wireless::receiver_mode(byte *rec_data){
     }
 }
 
-byte Wireless::get_status(void){
+byte nrf24_radio::get_status(void){
 	radio.send_command(0xFF, status_address);
 	return status_data;
 }
 
-byte Wireless::flush_RX_buffer(void){
+byte nrf24_radio::flush_RX_buffer(void){
 	radio.send_command(0xE2, status_address);
 	return status_data;
 }
 
-byte Wireless::flush_TX_buffer(void){
+byte nrf24_radio::flush_TX_buffer(void){
 	radio.send_command(0xE1, status_address);
 	return status_data;
 }
 
-byte Wireless::auto_acknowledge(byte data){
+byte nrf24_radio::auto_acknowledge(byte data){
 //bits 0 - 5 correspond to AA on data pipe 0 - 5
 	radio.write_register(0x01, data, status_address);
 	return status_data;
 }
 
-byte Wireless::enable_RX_addr(byte data){
+byte nrf24_radio::enable_RX_addr(byte data){
 //bits 0 - 5 correspond to AA on data pipe 0 - 5
 	radio.write_register(0x02, data, status_address);
 	return status_data;
 }
 
-byte Wireless::address_width(byte data){
+byte nrf24_radio::address_width(byte data){
 //decimal 1 = 3 bytes
 //decimal 2 = 4 bytes
 //decimal 3 = 5 bytes
@@ -145,18 +145,18 @@ byte Wireless::address_width(byte data){
 	return status_data;
 }
 
-byte Wireless::setup_retransmit(byte data){
+byte nrf24_radio::setup_retransmit(byte data){
 	radio.write_register(0x04, data, status_address);
 	return status_data;
 }
 
-byte Wireless::setup_frequency(byte data){
+byte nrf24_radio::setup_frequency(byte data){
 	radio.write_register(0x05, data, status_address);
 	return status_data;
 }
 
 
-void Wireless::transmitter_mode(byte *send_data, byte num_bytes){
+void nrf24_radio::transmitter_mode(byte *send_data, byte num_bytes){
 	
 	//send data to buffer and put in transmit mode
 	radio.write_CE(0);
