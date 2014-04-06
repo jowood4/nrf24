@@ -46,12 +46,8 @@ for(int i = 0; i<32;i++)
 
   radio.write_payload(sendByte, 32, status_address);
 
-  //flush RX buffer
-  radio.send_command(0xE2, status_address);
-
-  //flush TX buffer
-  radio.send_command(0xE1, status_address);
-
+  flush_RX_buffer;
+  flush_TX_buffer;
 
 }
 
@@ -73,14 +69,24 @@ void nrf24_radio::receiver_stop(void){
     radio.write_CE(0);
 }
 
-byte nrf24_radio::receiver_mode(byte *rec_data){
-    
-    //radio.write_CE(0);
-    radio.send_command(0xFF, status_address);
+byte nrf24_radio::bytes_received(void){
+	if(use_IRQ){
+		return radio.read_IRQ;
+	}
+	else{
+		get_status;
+		if((status_data & 0x20) > 0){
+			return 1;
+		}
+		else{
+			return 0;
+		}
+	}
+}
 
-    if(bitRead(status_data,6) == 1){
-      //got some data
-	
+byte nrf24_radio::receiver_mode(byte *rec_data){
+
+    if(bytes_received){
 
       //get FIFO number
       current_FIFO = 0x11;
@@ -90,13 +96,6 @@ byte nrf24_radio::receiver_mode(byte *rec_data){
       bytes_received = byte(bytes_received);
       
       rec_data = radio.read_payload(32, rec_data, status_address);
-            
-      //clear RX_DR bit
-	//radio.send_command(0xFF, status_address);
-	//status_data |= 0x70;
-	//radio.send_command(0xFF, status_address);
-	//Serial.print(int(status_data));
-	//Serial.print(char(10));
       
 	radio.send_command(0xE2, status_address);
 	status_data |= 0x70;
