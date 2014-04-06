@@ -1,5 +1,4 @@
 
-
 ///////////////////////////////////////////////////
 
 
@@ -37,11 +36,11 @@ class Wireless{
    private:
     	
 	byte data;
-	
-	
+	byte frequency;
+	byte retransmit;
+	byte use_IRQ;
 	byte bytes_received;
 	byte current_FIFO;
-	byte temp;
 	byte sendByte[32];
 	byte transmit_address[5];
 	byte *trans_add;
