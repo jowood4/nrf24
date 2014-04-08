@@ -1,12 +1,12 @@
+#include "nrf24_register.h"
 
-#include "nrf24L01_trinket.h"
-#include <SPI_trinket.h>
+//#include <SPI_trinket.h>
 
-nrf24L01_trinket::nrf24L01_trinket(){
+nrf24_register::nrf24_register(){
 
 }
 
-void nrf24L01_trinket::setup(byte csn, byte ce){
+void nrf24_register::setup(byte csn, byte ce){
 
  _CSN = csn;
  _CE = ce;
@@ -20,71 +20,72 @@ void nrf24L01_trinket::setup(byte csn, byte ce){
  digitalWrite(_CE, 0);
 }
 
-void nrf24L01_trinket::write_CSN(byte num){
-
- digitalWrite(_CSN, num);
+void nrf24_register::write_CSN(byte num){
+ write_pin(_CSN, bit);
+ //digitalWrite(_CSN, num);
 }
 
-void nrf24L01_trinket::write_CE(byte num){
+void nrf24_register::write_CE(byte num){
 
- digitalWrite(_CE, num);
+ //digitalWrite(_CE, num);
+ write_pin(_CE, bit);
 }
 
 
-byte nrf24L01_trinket::read_register(byte address, unsigned char *status){
+byte nrf24_register::read_register(byte address, unsigned char *status){
 
  byte data_read = 0;
 
  address &= 0x1F;
 
- digitalWrite(_CSN, LOW);
+ write_pin(_CSN, 0);
 
  *status = spi_shift(address);
  data_read = spi_shift(0x00);
 
- digitalWrite(_CSN, HIGH);
+ write_pin(_CSN, 1);
 
  return data_read;
 }
 
-byte* nrf24L01_trinket::read_payload(byte num_bytes, byte *payload_address, byte *status){
+byte* nrf24_register::read_payload(byte num_bytes, byte *payload_address, byte *status){
 
  byte command = 0x61;
 
- digitalWrite(_CSN, LOW);
+ write_pin(_CSN, 0);
 
  *status = spi_shift(command);
  for(int j=0;j<num_bytes;j++){
 	 payload_address[j] = spi_shift(0);
 }
 
- digitalWrite(_CSN, HIGH);
+ write_pin(_CSN, 1);
 
  return payload_address;
 }
 
 
-void nrf24L01_trinket::write_register(byte address, byte data, byte *status){
+void nrf24_register::write_register(byte address, byte data, byte *status){
 
  address &= 0x1F;
  address += 0x20;
 
- digitalWrite(_CSN, LOW);
+ write_pin(_CSN, 0);
 
  *status = spi_shift(address);
   spi_shift(data);
 
- digitalWrite(_CSN, HIGH);
+ write_pin(_CSN, 1);
  
 
 }
 
-void nrf24L01_trinket::set_rw_address(byte address, byte *data, byte num_bytes, byte *status){
+void nrf24_register::set_rw_address(byte address, byte *data, byte num_bytes, byte *status){
 
  address &= 0x1F;
  address += 0x20;
 
- digitalWrite(_CSN, LOW);
+ write_pin(_CSN, 0);
 
  *status = spi_shift(address);
 
@@ -92,17 +93,15 @@ void nrf24L01_trinket::set_rw_address(byte address, byte *data, byte num_bytes, 
  spi_shift(*data++);
 }
 
- digitalWrite(_CSN, HIGH);
+ write_pin(_CSN, 1);
 
 }
 
-byte* nrf24L01_trinket::read_rw_address(byte address, byte *address_address, byte *status){
-
- byte data_read = 0;
+byte* nrf24_register::read_rw_address(byte address, byte *address_address, byte *status){
 
  address &= 0x1F;
 
- digitalWrite(_CSN, LOW);
+ write_pin(_CSN, 0);
 
  *status = spi_shift(address);
 
@@ -110,17 +109,17 @@ byte* nrf24L01_trinket::read_rw_address(byte address, byte *address_address, byt
    address_address[i] = spi_shift(0x00);
 }
 
- digitalWrite(_CSN, HIGH);
+ write_pin(_CSN, 1);
 
  return address_address;
 }
 
 
-void nrf24L01_trinket::write_payload(byte *data_write, byte num_bytes, byte *status){
+void nrf24_register::write_payload(byte *data_write, byte num_bytes, byte *status){
 
  byte command = 0xA0;
 
- digitalWrite(_CSN, LOW);
+ write_pin(_CSN, 0);
 
  *status = spi_shift(command);
 
@@ -128,21 +127,21 @@ void nrf24L01_trinket::write_payload(byte *data_write, byte num_bytes, byte *sta
  spi_shift(*data_write++);
 }
 
- digitalWrite(_CSN, HIGH);
+ write_pin(_CSN, 1);
 
 }
 
-void nrf24L01_trinket::send_command(byte command, byte *status){
+void nrf24_register::send_command(byte command, byte *status){
 
- digitalWrite(_CSN, LOW);
+ write_pin(_CSN, 0);
 
  *status = spi_shift(command);
 
- digitalWrite(_CSN, HIGH);
+ write_pin(_CSN, 1);
 
 }
 
-byte nrf24L01_trinket::spi_shift(byte data_in){
+byte nrf24_register::spi_shift(byte data_in){
 
  byte data_out;
 
@@ -152,14 +151,14 @@ byte nrf24L01_trinket::spi_shift(byte data_in){
  return data_out;
 }
 
-void nrf24L01_trinket::write_buffer(byte address, byte *buffer, byte num_bytes, byte *status){
+void nrf24_register::write_buffer(byte address, byte *buffer, byte num_bytes, byte *status){
 
 	byte i = 0;
 
 	address &= 0x1F;
 	address += 0x20;
 
-	digitalWrite(_CSN, LOW);
+	write_pin(_CSN, 0);
 
 	*status = spi_shift(address);
 
@@ -167,7 +166,7 @@ void nrf24L01_trinket::write_buffer(byte address, byte *buffer, byte num_bytes, 
 		spi_shift(buffer[i]);
 	}
 
-	digitalWrite(_CSN, HIGH);
+	write_pin(_CSN, 1);
 }
 
 ////////////////////////////////////////////////////////
