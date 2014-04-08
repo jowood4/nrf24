@@ -3,8 +3,8 @@
 Arduino based NRF24L01 Header File
 */
 
-#ifndef NRF24L01_trinket_H
-#define NRF24L01_trinket_H
+#ifndef NRF24_REGISTER_H
+#define NRF24_REGISTER_H
 
 #if defined(ARDUINO) && ARDUINO >= 100
 #include "Arduino.h"
@@ -14,12 +14,11 @@ Arduino based NRF24L01 Header File
 
 #include <SPI_trinket.h>
 
-class nrf24L01_trinket{
+class nrf24_register{
 
    public:
-	nrf24L01_trinket();
+	nrf24_register();
 	void setup(byte csn, byte ce);
-	//nrf24L01(byte clk, byte csn, byte mosi, byte miso, byte ce);
 	byte read_register(byte address, unsigned char *status);
 	byte* read_payload(byte num_bytes, byte *payload_address, byte *status);
 	void write_register(byte address, byte data, byte *status);
