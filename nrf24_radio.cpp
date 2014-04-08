@@ -1,4 +1,17 @@
+#define TRINKET 1  //set if using Trinket
+//#define ARDUINO 1  //set if using Arduino
+//#define RASP_PI 1  //set if using Raspberry Pi
+
+#ifdef TRINKET
 #include <NRF24L01_trinket.h>
+
+#elif ARDUINO
+#include <NRF24L01_arduino.h>
+
+#else
+#endif 
+
+
 #include "nrf24_radio.h"
 
 nrf24_radio::nrf24_radio(void){
