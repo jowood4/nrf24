@@ -1,23 +1,22 @@
+#ifndef NRF24_RADIO_H
+#define NRF24_RADIO_H
 
-///////////////////////////////////////////////////
-
-
-/*
-Arduino based NRF24L01 Header File
-*/
-
-#ifndef WIRELESS_H
-#define WIRELESS_H
-
+#ifdef TRINKET
 #if defined(ARDUINO) && ARDUINO >= 100
 #include "Arduino.h"
 #else
 #include "WProgram.h"
 #endif
+#include <NRF24L01_trinket.h>
 
-#include "NRF24L01_trinket.h"
+#elif ARDUINO
+#include <NRF24L01_arduino.h>
 
-class Wireless{
+#else
+#include <NRF24L01_arduino.h>
+#endif
+
+class nrf24_radio{
 
    public:
 	Wireless();
