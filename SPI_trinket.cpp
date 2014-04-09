@@ -34,3 +34,7 @@ int SPI_trinket::spi_shift(int data_write)
 	}
 	return data_read;
 }
+
+void SPI_trinket::write_pin(int pin, int val){
+	digitalWrite(pin, val);
+}
