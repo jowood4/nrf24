@@ -1,15 +1,16 @@
 #include "SPI_trinket.h"
 
-SPI_trinket SPI;
-
-void SPI_trinket::setup(int clk, int dwr, int dre){
-  CLOCK = clk;
-  DWRITE = dwr;
-  DREAD = dre;
+void SPI_trinket::setup(byte csn, byte ce){
+ 
+  	_CSN = csn;
+  	_CE = ce;
   
-  pinMode(CLOCK, OUTPUT);
-  pinMode(DWRITE, OUTPUT);
-  pinMode(DREAD, INPUT);
+  	pinMode(_CSN, OUTPUT);
+	pinMode(_CE, OUTPUT);
+  
+	pinMode(CLOCK, OUTPUT);
+	pinMode(DWRITE, OUTPUT);
+	pinMode(DREAD, INPUT);
 
 	digitalWrite(CLOCK, LOW);
 	digitalWrite(DWRITE, LOW);
@@ -37,4 +38,8 @@ int SPI_trinket::spi_shift(int data_write)
 
 void SPI_trinket::write_pin(int pin, int val){
 	digitalWrite(pin, val);
+}
+
+int SPI_trinket::read_pin(int pin){
+	return digitalRead(pin);
 }
