@@ -1,18 +1,15 @@
-///////////////////////////////////////////////////
-/*
-Arduino based NRF24L01 Header File
-*/
-
 #ifndef NRF24_REGISTER_H
 #define NRF24_REGISTER_H
 
-#if defined(ARDUINO) && ARDUINO >= 100
-#include "Arduino.h"
-#else
-#include "WProgram.h"
+#define NRF_TRINKET 1
+
+#if defined(NRF_TRINKET)
+#include "SPI_trinket.h"
+#elif defined(NRF_ARDUINO)
+#include "SPI_arduino.h"
 #endif
 
-#include <SPI_trinket.h>
+#include "Arduino.h"
 
 class nrf24_register{
 
@@ -31,13 +28,22 @@ class nrf24_register{
 	void set_rw_address(byte rw_address, byte *address, byte num_bytes, byte *status);
 	void write_buffer(byte address, byte *buffer, byte num_bytes, byte *status);
 	byte* read_rw_address(byte rw_address, byte *address_address, byte *status);
+	byte read_IRQ(void);
 
    private:
+		
+	#if defined(NRF_TRINKET)
+		SPI_trinket SPI_nrf;
+	#elif defined(NRF_ARDUINO)
+		SPI_arduino SPI_nrf;
+	#endif
+   
     	byte _CE;
     	byte _CSN;
     	byte _CLK;    
     	byte _MOSI;
     	byte _MISO;
+	byte _IRQ;
 };
 
 #endif
