@@ -1,17 +1,3 @@
-#define TRINKET 1  //set if using Trinket
-//#define ARDUINO 1  //set if using Arduino
-//#define RASP_PI 1  //set if using Raspberry Pi
-
-#ifdef TRINKET
-#include <NRF24L01_trinket.h>
-
-#elif ARDUINO
-#include <NRF24L01_arduino.h>
-
-#else
-#endif 
-
-
 #include "nrf24_radio.h"
 
 nrf24_radio::nrf24_radio(void){
@@ -59,8 +45,8 @@ for(int i = 0; i<32;i++)
 
   radio.write_payload(sendByte, 32, status_address);
 
-  flush_RX_buffer;
-  flush_TX_buffer;
+  flush_RX_buffer();
+  flush_TX_buffer();
 
 }
 
@@ -84,10 +70,10 @@ void nrf24_radio::receiver_stop(void){
 
 byte nrf24_radio::bytes_received(void){
 	if(use_IRQ){
-		return radio.read_IRQ;
+		return radio.read_IRQ();
 	}
 	else{
-		get_status;
+		get_status();
 		if((status_data & 0x20) > 0){
 			return 1;
 		}
@@ -99,26 +85,26 @@ byte nrf24_radio::bytes_received(void){
 
 byte nrf24_radio::receiver_mode(byte *rec_data){
 
-    if(bytes_received){
+    if(bytes_received()){
 
       //get FIFO number
       current_FIFO = 0x11;
       
       //get number of bytes received
-      bytes_received = radio.read_register(current_FIFO, status_address);
-      bytes_received = byte(bytes_received);
+      received_bytes = radio.read_register(current_FIFO, status_address);
+      received_bytes = byte(received_bytes);
       
       rec_data = radio.read_payload(32, rec_data, status_address);
       
-	radio.send_command(0xE2, status_address);
-	status_data |= 0x70;
-	radio.write_register(0x07, status_data, status_address);
+	  radio.send_command(0xE2, status_address);
+	  status_data |= 0x70;
+	  radio.write_register(0x07, status_data, status_address);
 
-      return bytes_received;
+      return received_bytes;
     }
     else{
-	radio.write_CE(1);
-	return byte(0);
+	  radio.write_CE(1);
+	  return byte(0);
     }
 }
 
