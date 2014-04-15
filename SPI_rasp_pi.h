@@ -2,6 +2,7 @@
 #define SPI_rasp_pi_h
 
 #include <wiringPi.h>
+#include <wiringPiSPI.h>
 
 class SPI_rasp_pi
 {
