@@ -7,6 +7,8 @@
 #include "SPI_trinket.h"
 #elif defined(NRF_ARDUINO)
 #include "SPI_arduino.h"
+#elif defined(NRF_RASP_PI)
+#include "SPI_rasp_pi.h"
 #endif
 
 #include "Arduino.h"
