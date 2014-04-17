@@ -4,7 +4,7 @@ nrf24_radio::nrf24_radio(void){
 
 }
 
-void nrf24_radio::setup(byte csn, byte ce){
+void nrf24_radio::setup(int csn, int ce){
 
   radio.setup(csn, ce);
   radio.write_CE(0);
@@ -12,7 +12,7 @@ void nrf24_radio::setup(byte csn, byte ce){
 
 for(int i = 0; i<32;i++)
 {
-  sendByte[i] = 0xAA;
+  sendint[i] = 0xAA;
 }
 
   status_address = &status_data;
@@ -43,7 +43,7 @@ for(int i = 0; i<32;i++)
   radio.write_register(0x07, status_data, status_address);
 
 
-  radio.write_payload(sendByte, 32, status_address);
+  radio.write_payload(sendint, 32, status_address);
 
   flush_RX_buffer();
   flush_TX_buffer();
@@ -68,7 +68,7 @@ void nrf24_radio::receiver_stop(void){
     radio.write_CE(0);
 }
 
-byte nrf24_radio::bytes_received(void){
+int nrf24_radio::ints_received(void){
 	if(use_IRQ){
 		return radio.read_IRQ();
 	}
@@ -83,16 +83,16 @@ byte nrf24_radio::bytes_received(void){
 	}
 }
 
-byte nrf24_radio::receiver_mode(byte *rec_data){
+int nrf24_radio::receiver_mode(int *rec_data){
 
-    if(bytes_received()){
+    if(ints_received()){
 
       //get FIFO number
       current_FIFO = 0x11;
       
-      //get number of bytes received
-      received_bytes = radio.read_register(current_FIFO, status_address);
-      received_bytes = byte(received_bytes);
+      //get number of ints received
+      received_ints = radio.read_register(current_FIFO, status_address);
+      received_ints = int(received_ints);
       
       rec_data = radio.read_payload(32, rec_data, status_address);
       
@@ -100,65 +100,65 @@ byte nrf24_radio::receiver_mode(byte *rec_data){
 	  status_data |= 0x70;
 	  radio.write_register(0x07, status_data, status_address);
 
-      return received_bytes;
+      return received_ints;
     }
     else{
 	  radio.write_CE(1);
-	  return byte(0);
+	  return int(0);
     }
 }
 
-byte nrf24_radio::get_status(void){
+int nrf24_radio::get_status(void){
 	radio.send_command(0xFF, status_address);
 	return status_data;
 }
 
-byte nrf24_radio::flush_RX_buffer(void){
+int nrf24_radio::flush_RX_buffer(void){
 	radio.send_command(0xE2, status_address);
 	return status_data;
 }
 
-byte nrf24_radio::flush_TX_buffer(void){
+int nrf24_radio::flush_TX_buffer(void){
 	radio.send_command(0xE1, status_address);
 	return status_data;
 }
 
-byte nrf24_radio::auto_acknowledge(byte data){
+int nrf24_radio::auto_acknowledge(int data){
 //bits 0 - 5 correspond to AA on data pipe 0 - 5
 	radio.write_register(0x01, data, status_address);
 	return status_data;
 }
 
-byte nrf24_radio::enable_RX_addr(byte data){
+int nrf24_radio::enable_RX_addr(int data){
 //bits 0 - 5 correspond to AA on data pipe 0 - 5
 	radio.write_register(0x02, data, status_address);
 	return status_data;
 }
 
-byte nrf24_radio::address_width(byte data){
-//decimal 1 = 3 bytes
-//decimal 2 = 4 bytes
-//decimal 3 = 5 bytes
+int nrf24_radio::address_width(int data){
+//decimal 1 = 3 ints
+//decimal 2 = 4 ints
+//decimal 3 = 5 ints
 	radio.write_register(0x03, data, status_address);
 	return status_data;
 }
 
-byte nrf24_radio::setup_retransmit(byte data){
+int nrf24_radio::setup_retransmit(int data){
 	radio.write_register(0x04, data, status_address);
 	return status_data;
 }
 
-byte nrf24_radio::setup_frequency(byte data){
+int nrf24_radio::setup_frequency(int data){
 	radio.write_register(0x05, data, status_address);
 	return status_data;
 }
 
 
-void nrf24_radio::transmitter_mode(byte *send_data, byte num_bytes){
+void nrf24_radio::transmitter_mode(int *send_data, int num_ints){
 	
 	//send data to buffer and put in transmit mode
 	radio.write_CE(0);
-      radio.write_payload(send_data, num_bytes, status_address);
+      radio.write_payload(send_data, num_ints, status_address);
       radio.write_register(0x00, 0x4E, status_address);
 	radio.write_CE(1);
       delay(50);
