@@ -11,26 +11,24 @@
 #include "SPI_rasp_pi.h"
 #endif
 
-#include "Arduino.h"
-
 class nrf24_register{
 
    public:
 	nrf24_register();
-	void setup(byte csn, byte ce);
-	byte read_register(byte address, unsigned char *status);
-	byte* read_payload(byte num_bytes, byte *payload_address, byte *status);
-	void write_register(byte address, byte data, byte *status);
-	void write_payload(byte *data_write, byte num_bytes, byte *status);
-	void powerOFF(byte *status);
-	void write_CE(byte num);
-	void send_command(byte command, byte *status);
-	byte spi_shift(byte data_in);
-	void write_CSN(byte num);
-	void set_rw_address(byte rw_address, byte *address, byte num_bytes, byte *status);
-	void write_buffer(byte address, byte *buffer, byte num_bytes, byte *status);
-	byte* read_rw_address(byte rw_address, byte *address_address, byte *status);
-	byte read_IRQ(void);
+	void setup(int csn, int ce);
+	int read_register(int address, unsigned char *status);
+	int* read_payload(int num_ints, int *payload_address, int *status);
+	void write_register(int address, int data, int *status);
+	void write_payload(int *data_write, int num_ints, int *status);
+	void powerOFF(int *status);
+	void write_CE(int num);
+	void send_command(int command, int *status);
+	int spi_shift(int data_in);
+	void write_CSN(int num);
+	void set_rw_address(int rw_address, int *address, int num_ints, int *status);
+	void write_buffer(int address, int *buffer, int num_ints, int *status);
+	int* read_rw_address(int rw_address, int *address_address, int *status);
+	int read_IRQ(void);
 
    private:
 		
@@ -40,12 +38,12 @@ class nrf24_register{
 		SPI_arduino SPI_nrf;
 	#endif
    
-    	byte _CE;
-    	byte _CSN;
-    	byte _CLK;    
-    	byte _MOSI;
-    	byte _MISO;
-	byte _IRQ;
+    	int _CE;
+    	int _CSN;
+    	int _CLK;    
+    	int _MOSI;
+    	int _MISO;
+	int _IRQ;
 };
 
 #endif
