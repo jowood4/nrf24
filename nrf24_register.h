@@ -16,7 +16,7 @@ class nrf24_register{
    public:
 	nrf24_register();
 	void setup(int csn, int ce);
-	int read_register(int address, unsigned char *status);
+	int read_register(int address, int *status);
 	int* read_payload(int num_ints, int *payload_address, int *status);
 	void write_register(int address, int data, int *status);
 	void write_payload(int *data_write, int num_ints, int *status);
