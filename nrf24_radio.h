@@ -7,38 +7,38 @@ class nrf24_radio{
 
    public:
 	nrf24_radio();
-	void setup(byte csn, byte ce);
-	byte receiver_mode(byte *rec_data);
+	void setup(int csn, int ce);
+	int receiver_mode(int *rec_data);
 	void receiver_stop(void);
 	void receiver_start(void);
-	void transmitter_mode(byte *send_data, byte num_bytes);
-	byte get_status(void);
-	byte setup_retransmit(byte data);
-	byte address_width(byte data);
-	byte enable_RX_addr(byte data);
-	byte auto_acknowledge(byte data);
-	byte flush_TX_buffer(void);
-	byte flush_RX_buffer(void);
-	byte bytes_received(void);
-	byte setup_frequency(byte data);
+	void transmitter_mode(int *send_data, int num_ints);
+	int get_status(void);
+	int setup_retransmit(int data);
+	int address_width(int data);
+	int enable_RX_addr(int data);
+	int auto_acknowledge(int data);
+	int flush_TX_buffer(void);
+	int flush_RX_buffer(void);
+	int ints_received(void);
+	int setup_frequency(int data);
 
-	byte *address_array;
-	byte byteread;
+	int *address_array;
+	int intread;
 	nrf24_register radio;
-	byte *status_address;
-	byte status_data;
+	int *status_address;
+	int status_data;
 
    private:
-	byte data;
-	byte frequency;
-	byte retransmit;
-	byte use_IRQ;
-	byte received_bytes;
-	byte current_FIFO;
-	byte sendByte[32];
-	byte transmit_address[5];
-	byte *trans_add;
-	byte read_byte;
+	int data;
+	int frequency;
+	int retransmit;
+	int use_IRQ;
+	int received_ints;
+	int current_FIFO;
+	int sendint[32];
+	int transmit_address[5];
+	int *trans_add;
+	int read_int;
 
 };
 
