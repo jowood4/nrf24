@@ -8,7 +8,7 @@ class SPI_rasp_pi
 {
 public:
       void setup(int csn, int ce);
-      int spi_shift(int data_write);
+      unsigned char spi_shift(unsigned char data_write);
 	    void write_pin(int pin, int val);
 	    int read_pin(int pin);
 

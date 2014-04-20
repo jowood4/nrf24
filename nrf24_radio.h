@@ -19,11 +19,11 @@ class nrf24_radio{
 	int auto_acknowledge(int data);
 	int flush_TX_buffer(void);
 	int flush_RX_buffer(void);
-	int ints_received(void);
+	int bytes_received(void);
 	int setup_frequency(int data);
 
 	int *address_array;
-	int intread;
+	int byteread;
 	nrf24_register radio;
 	int *status_address;
 	int status_data;
@@ -33,12 +33,12 @@ class nrf24_radio{
 	int frequency;
 	int retransmit;
 	int use_IRQ;
-	int received_ints;
+	int received_bytes;
 	int current_FIFO;
 	int sendint[32];
 	int transmit_address[5];
 	int *trans_add;
-	int read_int;
+	int read_byte;
 
 };
 

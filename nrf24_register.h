@@ -1,7 +1,7 @@
 #ifndef NRF24_REGISTER_H
 #define NRF24_REGISTER_H
 
-#define NRF_TRINKET 1
+#define NRF_RASP_PI 1
 
 #if defined(NRF_TRINKET)
 #include "SPI_trinket.h"
@@ -26,7 +26,7 @@ class nrf24_register{
 	int spi_shift(int data_in);
 	void write_CSN(int num);
 	void set_rw_address(int rw_address, int *address, int num_ints, int *status);
-	void write_buffer(int address, int *buffer, int num_ints, int *status);
+	void write_buffer(int address, int *buffer, int num_bytes, int *status);
 	int* read_rw_address(int rw_address, int *address_address, int *status);
 	int read_IRQ(void);
 
@@ -36,6 +36,8 @@ class nrf24_register{
 		SPI_trinket SPI_nrf;
 	#elif defined(NRF_ARDUINO)
 		SPI_arduino SPI_nrf;
+        #elif defined(NRF_RASP_PI)
+               SPI_rasp_pi SPI_nrf;
 	#endif
    
     	int _CE;

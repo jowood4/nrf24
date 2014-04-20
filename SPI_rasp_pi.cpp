@@ -11,9 +11,10 @@ void SPI_rasp_pi::setup(int csn, int ce){
 	pinMode(ce, OUTPUT);
 }
 
-int SPI_rasp_pi::spi_shift(int data_write){
+unsigned char SPI_rasp_pi::spi_shift(unsigned char data_write){
 	unsigned char* data_buffer = &data_write;
 	wiringPiSPIDataRW(0,data_buffer,1);
+        return *data_buffer;
 }
 
 void SPI_rasp_pi::write_pin(int pin, int val){

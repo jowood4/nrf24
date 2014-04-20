@@ -4,25 +4,25 @@ nrf24_register::nrf24_register(){
 
 }
 
-void nrf24_register::setup(byte csn, byte ce){
+void nrf24_register::setup(int csn, int ce){
   	SPI_nrf.setup(csn, ce);
 }
 
-void nrf24_register::write_CSN(byte num){
+void nrf24_register::write_CSN(int num){
  	SPI_nrf.write_pin(_CSN, num);
  //digitalWrite(_CSN, num);
 }
 
-void nrf24_register::write_CE(byte num){
+void nrf24_register::write_CE(int num){
 
  //digitalWrite(_CE, num);
  	SPI_nrf.write_pin(_CE, num);
 }
 
 
-byte nrf24_register::read_register(byte address, unsigned char *status){
+int nrf24_register::read_register(int address, int *status){
 
- 	byte data_read = 0;
+ 	int data_read = 0;
 
  	address &= 0x1F;
 
@@ -36,9 +36,9 @@ byte nrf24_register::read_register(byte address, unsigned char *status){
  	return data_read;
 }
 
-byte* nrf24_register::read_payload(byte num_bytes, byte *payload_address, byte *status){
+int* nrf24_register::read_payload(int num_bytes, int *payload_address, int *status){
 
- 	byte command = 0x61;
+ 	int command = 0x61;
 
  	SPI_nrf.write_pin(_CSN, 0);
 
@@ -53,7 +53,7 @@ byte* nrf24_register::read_payload(byte num_bytes, byte *payload_address, byte *
 }
 
 
-void nrf24_register::write_register(byte address, byte data, byte *status){
+void nrf24_register::write_register(int address, int data, int *status){
 
  	address &= 0x1F;
  	address += 0x20;
@@ -67,7 +67,13 @@ void nrf24_register::write_register(byte address, byte data, byte *status){
  
 }
 
-void nrf24_register::set_rw_address(byte address, byte *data, byte num_bytes, byte *status){
+void nrf24_register::powerOFF(int *status){
+
+    write_register(0x00, 0x00, status);
+
+}
+
+void nrf24_register::set_rw_address(int address, int *data, int num_ints, int *status){
 
 	address &= 0x1F;
  	address += 0x20;
@@ -76,7 +82,7 @@ void nrf24_register::set_rw_address(byte address, byte *data, byte num_bytes, by
 
  	*status = spi_shift(address);
 
- 	for(int i = 0; i<num_bytes; i++){
+ 	for(int i = 0; i<num_ints; i++){
  		SPI_nrf.spi_shift(*data++);
 	}
 
@@ -84,7 +90,7 @@ void nrf24_register::set_rw_address(byte address, byte *data, byte num_bytes, by
 
 }
 
-byte* nrf24_register::read_rw_address(byte address, byte *address_address, byte *status){
+int* nrf24_register::read_rw_address(int address, int *address_address, int *status){
 
  	address &= 0x1F;
 
@@ -102,15 +108,15 @@ byte* nrf24_register::read_rw_address(byte address, byte *address_address, byte 
 }
 
 
-void nrf24_register::write_payload(byte *data_write, byte num_bytes, byte *status){
+void nrf24_register::write_payload(int *data_write, int num_ints, int *status){
 
- 	byte command = 0xA0;
+ 	int command = 0xA0;
 
  	SPI_nrf.write_pin(_CSN, 0);
 
  	*status = spi_shift(command);
 
- 	for(int j=0;j<num_bytes;j++){
+ 	for(int j=0;j<num_ints;j++){
  		spi_shift(*data_write++);
 	}
 
@@ -118,7 +124,7 @@ void nrf24_register::write_payload(byte *data_write, byte num_bytes, byte *statu
 
 }
 
-void nrf24_register::send_command(byte command, byte *status){
+void nrf24_register::send_command(int command, int *status){
 
  	SPI_nrf.write_pin(_CSN, 0);
 
@@ -128,9 +134,9 @@ void nrf24_register::send_command(byte command, byte *status){
 
 }
 
-byte nrf24_register::spi_shift(byte data_in){
+int nrf24_register::spi_shift(int data_in){
 
- 	byte data_out;
+ 	int data_out;
 
  //data_out = SPI_nrf.transfer(data_in);
  	data_out = SPI_nrf.spi_shift(data_in);
@@ -138,9 +144,9 @@ byte nrf24_register::spi_shift(byte data_in){
  	return data_out;
 }
 
-void nrf24_register::write_buffer(byte address, byte *buffer, byte num_bytes, byte *status){
+void nrf24_register::write_buffer(int address, int *buffer, int num_ints, int *status){
 
-	byte i = 0;
+	int i = 0;
 
 	address &= 0x1F;
 	address += 0x20;
@@ -149,14 +155,14 @@ void nrf24_register::write_buffer(byte address, byte *buffer, byte num_bytes, by
 
 	*status = spi_shift(address);
 
-	for(i = 0; i<num_bytes; i++){
+	for(i = 0; i<num_ints; i++){
 		SPI_nrf.spi_shift(buffer[i]);
 	}
 
 	SPI_nrf.write_pin(_CSN, 1);
 }
 
-byte nrf24_register::read_IRQ(void){
+int nrf24_register::read_IRQ(void){
 	return SPI_nrf.read_pin(_IRQ);
 }
 

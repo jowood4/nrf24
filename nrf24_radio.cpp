@@ -68,7 +68,7 @@ void nrf24_radio::receiver_stop(void){
     radio.write_CE(0);
 }
 
-int nrf24_radio::ints_received(void){
+int nrf24_radio::bytes_received(void){
 	if(use_IRQ){
 		return radio.read_IRQ();
 	}
@@ -85,14 +85,14 @@ int nrf24_radio::ints_received(void){
 
 int nrf24_radio::receiver_mode(int *rec_data){
 
-    if(ints_received()){
+    if(bytes_received()){
 
       //get FIFO number
       current_FIFO = 0x11;
       
-      //get number of ints received
-      received_ints = radio.read_register(current_FIFO, status_address);
-      received_ints = int(received_ints);
+      //get number of bytes received
+      received_bytes = radio.read_register(current_FIFO, status_address);
+      received_bytes = int(received_bytes);
       
       rec_data = radio.read_payload(32, rec_data, status_address);
       
@@ -100,7 +100,7 @@ int nrf24_radio::receiver_mode(int *rec_data){
 	  status_data |= 0x70;
 	  radio.write_register(0x07, status_data, status_address);
 
-      return received_ints;
+      return received_bytes;
     }
     else{
 	  radio.write_CE(1);
