@@ -1,6 +1,8 @@
 #ifndef NRF24_REGISTER_H
 #define NRF24_REGISTER_H
 
+#include "stdint.h"
+
 #define NRF_RASP_PI 1
 
 #if defined(NRF_TRINKET)
@@ -15,20 +17,20 @@ class nrf24_register{
 
    public:
 	nrf24_register();
-	void setup(int csn, int ce);
-	int read_register(int address, int *status);
-	int* read_payload(int num_ints, int *payload_address, int *status);
-	void write_register(int address, int data, int *status);
-	void write_payload(int *data_write, int num_ints, int *status);
-	void powerOFF(int *status);
-	void write_CE(int num);
-	void send_command(int command, int *status);
-	int spi_shift(int data_in);
-	void write_CSN(int num);
-	void set_rw_address(int rw_address, int *address, int num_ints, int *status);
-	void write_buffer(int address, int *buffer, int num_bytes, int *status);
-	int* read_rw_address(int rw_address, int *address_address, int *status);
-	int read_IRQ(void);
+	void setup(uint8_t csn, uint8_t ce);
+	uint8_t read_register(uint8_t address, uint8_t *status);
+	uint8_t* read_payload(uint8_t num_bytes, uint8_t *payload_address, uint8_t *status);
+	void write_register(uint8_t address, uint8_t data, uint8_t *status);
+	void write_payload(uint8_t *data_write, uint8_t num_bytes, uint8_t *status);
+	void powerOFF(uint8_t *status);
+	void write_CE(uint8_t num);
+	void send_command(uint8_t command, uint8_t *status);
+	uint8_t spi_shift(uint8_t data_in);
+	void write_CSN(uint8_t num);
+	void set_rw_address(uint8_t rw_address, uint8_t *address, uint8_t num_ints, uint8_t *status);
+	void write_buffer(uint8_t address, uint8_t *buffer, uint8_t num_bytes, uint8_t *status);
+	uint8_t* read_rw_address(uint8_t rw_address, uint8_t *address_address, uint8_t *status);
+	uint8_t read_IRQ(void);
 
    private:
 		
@@ -40,12 +42,12 @@ class nrf24_register{
                SPI_rasp_pi SPI_nrf;
 	#endif
    
-    	int _CE;
-    	int _CSN;
-    	int _CLK;    
-    	int _MOSI;
-    	int _MISO;
-	int _IRQ;
+    	uint8_t _CE;
+    	uint8_t _CSN;
+    	uint8_t _CLK;    
+    	uint8_t _MOSI;
+    	uint8_t _MISO;
+	uint8_t _IRQ;
 };
 
 #endif

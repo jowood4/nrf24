@@ -3,22 +3,16 @@
 
 #include <wiringPi.h>
 #include <wiringPiSPI.h>
+#include <stdint.h>
 
 class SPI_rasp_pi
 {
 public:
-      void setup(int csn, int ce);
-      unsigned char spi_shift(unsigned char data_write);
-	    void write_pin(int pin, int val);
-	    int read_pin(int pin);
-
-private:
-      int _CE;
-      int _CSN;
-      int _CLK;    
-      int _MOSI;
-      int _MISO;
-	    int _IRQ;
+      void setup(void);
+      void set_pinMode(uint8_t pin, uint8_t direction);
+      uint8_t spi_shift(uint8_t data_write);
+	    void write_pin(uint8_t pin, uint8_t val);
+	    uint8_t read_pin(uint8_t pin);
 };
 
 #endif

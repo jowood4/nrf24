@@ -4,25 +4,29 @@ nrf24_register::nrf24_register(){
 
 }
 
-void nrf24_register::setup(int csn, int ce){
-  	SPI_nrf.setup(csn, ce);
+void nrf24_register::setup(uint8_t csn, uint8_t ce){
+  	SPI_nrf.setup();
+        _CSN = csn;
+        _CE = ce;
+        SPI_nrf.set_pinMode(_CSN, OUTPUT);
+        SPI_nrf.set_pinMode(_CE, OUTPUT);
 }
 
-void nrf24_register::write_CSN(int num){
+void nrf24_register::write_CSN(uint8_t num){
  	SPI_nrf.write_pin(_CSN, num);
  //digitalWrite(_CSN, num);
 }
 
-void nrf24_register::write_CE(int num){
+void nrf24_register::write_CE(uint8_t num){
 
  //digitalWrite(_CE, num);
  	SPI_nrf.write_pin(_CE, num);
 }
 
 
-int nrf24_register::read_register(int address, int *status){
+uint8_t nrf24_register::read_register(uint8_t address, uint8_t *status){
 
- 	int data_read = 0;
+ 	uint8_t data_read = 0;
 
  	address &= 0x1F;
 
@@ -36,14 +40,14 @@ int nrf24_register::read_register(int address, int *status){
  	return data_read;
 }
 
-int* nrf24_register::read_payload(int num_bytes, int *payload_address, int *status){
+uint8_t* nrf24_register::read_payload(uint8_t num_bytes, uint8_t *payload_address, uint8_t *status){
 
- 	int command = 0x61;
+ 	uint8_t command = 0x61;
 
  	SPI_nrf.write_pin(_CSN, 0);
 
  	*status = spi_shift(command);
- 	for(int j=0;j<num_bytes;j++){
+ 	for(uint8_t j=0;j<num_bytes;j++){
 	 	payload_address[j] = spi_shift(0);
 	}
 
@@ -53,7 +57,7 @@ int* nrf24_register::read_payload(int num_bytes, int *payload_address, int *stat
 }
 
 
-void nrf24_register::write_register(int address, int data, int *status){
+void nrf24_register::write_register(uint8_t address, uint8_t data, uint8_t *status){
 
  	address &= 0x1F;
  	address += 0x20;
@@ -67,13 +71,13 @@ void nrf24_register::write_register(int address, int data, int *status){
  
 }
 
-void nrf24_register::powerOFF(int *status){
+void nrf24_register::powerOFF(uint8_t *status){
 
     write_register(0x00, 0x00, status);
 
 }
 
-void nrf24_register::set_rw_address(int address, int *data, int num_ints, int *status){
+void nrf24_register::set_rw_address(uint8_t address, uint8_t *data, uint8_t num_bytes, uint8_t *status){
 
 	address &= 0x1F;
  	address += 0x20;
@@ -82,7 +86,7 @@ void nrf24_register::set_rw_address(int address, int *data, int num_ints, int *s
 
  	*status = spi_shift(address);
 
- 	for(int i = 0; i<num_ints; i++){
+ 	for(uint8_t i = 0; i<num_bytes; i++){
  		SPI_nrf.spi_shift(*data++);
 	}
 
@@ -90,7 +94,7 @@ void nrf24_register::set_rw_address(int address, int *data, int num_ints, int *s
 
 }
 
-int* nrf24_register::read_rw_address(int address, int *address_address, int *status){
+uint8_t* nrf24_register::read_rw_address(uint8_t address, uint8_t *address_address, uint8_t *status){
 
  	address &= 0x1F;
 
@@ -98,7 +102,7 @@ int* nrf24_register::read_rw_address(int address, int *address_address, int *sta
 
  	*status = spi_shift(address);
 
- 	for(int i = 0; i<5; i++){
+ 	for(uint8_t i = 0; i<5; i++){
    		address_address[i] = spi_shift(0x00);
 	}
 
@@ -108,15 +112,15 @@ int* nrf24_register::read_rw_address(int address, int *address_address, int *sta
 }
 
 
-void nrf24_register::write_payload(int *data_write, int num_ints, int *status){
+void nrf24_register::write_payload(uint8_t *data_write, uint8_t num_bytes, uint8_t *status){
 
- 	int command = 0xA0;
+ 	uint8_t command = 0xA0;
 
  	SPI_nrf.write_pin(_CSN, 0);
 
  	*status = spi_shift(command);
 
- 	for(int j=0;j<num_ints;j++){
+ 	for(uint8_t j=0;j<num_bytes;j++){
  		spi_shift(*data_write++);
 	}
 
@@ -124,7 +128,7 @@ void nrf24_register::write_payload(int *data_write, int num_ints, int *status){
 
 }
 
-void nrf24_register::send_command(int command, int *status){
+void nrf24_register::send_command(uint8_t command, uint8_t *status){
 
  	SPI_nrf.write_pin(_CSN, 0);
 
@@ -134,9 +138,9 @@ void nrf24_register::send_command(int command, int *status){
 
 }
 
-int nrf24_register::spi_shift(int data_in){
+uint8_t nrf24_register::spi_shift(uint8_t data_in){
 
- 	int data_out;
+ 	uint8_t data_out;
 
  //data_out = SPI_nrf.transfer(data_in);
  	data_out = SPI_nrf.spi_shift(data_in);
@@ -144,9 +148,9 @@ int nrf24_register::spi_shift(int data_in){
  	return data_out;
 }
 
-void nrf24_register::write_buffer(int address, int *buffer, int num_ints, int *status){
+void nrf24_register::write_buffer(uint8_t address, uint8_t *buffer, uint8_t num_bytes, uint8_t *status){
 
-	int i = 0;
+	uint8_t i = 0;
 
 	address &= 0x1F;
 	address += 0x20;
@@ -155,14 +159,14 @@ void nrf24_register::write_buffer(int address, int *buffer, int num_ints, int *s
 
 	*status = spi_shift(address);
 
-	for(i = 0; i<num_ints; i++){
+	for(i = 0; i<num_bytes; i++){
 		SPI_nrf.spi_shift(buffer[i]);
 	}
 
 	SPI_nrf.write_pin(_CSN, 1);
 }
 
-int nrf24_register::read_IRQ(void){
+uint8_t nrf24_register::read_IRQ(void){
 	return SPI_nrf.read_pin(_IRQ);
 }
 
