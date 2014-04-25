@@ -1,53 +1,79 @@
 #include "nrf24_radio.h"
 
 nrf24_radio::nrf24_radio(void){
+	auto_ack = 0x01;
+	en_RX_addr = 0x01;
+	addr_width = 0x03;
+	retransmit = 0x1A;
+	frequency = 0x70;
+	RF_power = 0;
+	data_rate = 0;
+	carrier = 0;
+	use_IRQ = 0;
 
+	status_address = &status_data;
+	transmit_address[0] = 0x01;
+	transmit_address[1] = 0x01;
+	transmit_address[2] = 0x01;
+	transmit_address[3] = 0x01;
+	transmit_address[4] = 0x01;
+}
+
+void nrf24_radio::refresh(void){
+
+  //radio.write_register(0x01, 0x01, status_address); //auto_ack
+  //radio.write_register(0x02, 0x01, status_address); //en_RX_addr
+  //radio.write_register(0x04, 0x1A, status_address); //retransmit
+  //radio.write_register(0x05, 0x70, status_address); //frequency
+  //radio.write_register(0x06, 0x26, status_address); //rf_param
+  //radio.write_register(0x11, 0x20, status_address); //??
+
+	setup_auto_acknowledge();
+	setup_frequency();
+	setup_retransmit();
+	setup_addr_width();
+	setup_en_RX_addr();
+	setup_RF_param();
+
+	radio.set_rw_address(0x10, transmit_address, 5, status_address); //TX addr
+	radio.set_rw_address(0x0A, transmit_address, 5, status_address); //RX0 addr
+}
+
+uint8_t nrf24_radio::powerOFF(void){
+	data = read_register(0x00);
+    	radio.write_register(0x00, data&0xFE, status_address);
+	return status_data;
+}
+
+uint8_t nrf24_radio::powerON(void){
+	data = read_register(0x00);
+    	radio.write_register(0x00, data|0x01, status_address);
+	return status_data;
 }
 
 void nrf24_radio::setup(uint8_t csn, uint8_t ce){
 
-  radio.setup(csn, ce);
-  radio.write_CE(0);
-  radio.write_CSN(1);
+	radio.setup(csn, ce);
+	radio.write_CE(0);
+  	radio.write_CSN(1);
 
-for(uint8_t i = 0; i<32;i++)
-{
-  sendbyte[i] = 0xAA;
-}
+	for(uint8_t i = 0; i<32;i++)
+	{
+  		sendbyte[i] = 0xAA;
+	}
 
-  status_address = &status_data;
-  transmit_address[0] = 0x01;
-  transmit_address[1] = 0x01;
-  transmit_address[2] = 0x01;
-  transmit_address[3] = 0x01;
-  transmit_address[4] = 0x01;
-  trans_add = transmit_address;
+	powerOFF();
+	refresh();
 
-  radio.write_register(0x01, 0x01, status_address);
-  radio.write_register(0x02, 0x01, status_address);
-  radio.write_register(0x04, 0x1A, status_address);
-  radio.write_register(0x05, 0x70, status_address);
-  radio.write_register(0x06, 0x26, status_address);
-  radio.write_register(0x11, 0x20, status_address);
-  radio.set_rw_address(0x10, transmit_address, 5, status_address);
-  radio.set_rw_address(0x0A, transmit_address, 5, status_address);
-  
-  radio.write_register(0x00, 0x00, status_address);
-  radio.write_register(0x00, 0x0F, status_address);
-  delay(2);
+  	flush_RX_buffer();
+  	flush_TX_buffer();
 
-  //address_array = radio.read_rw_address(0x0A, address_array, status_address);
+  	powerON();
+  	delay(2);
 
-  radio.send_command(0xFF, status_address);
-  status_data |= 0x70;
-  radio.write_register(0x07, status_data, status_address);
+	//address_array = radio.read_rw_address(0x0A, address_array, status_address);
 
-
-  radio.write_payload(sendbyte, 32, status_address);
-
-  flush_RX_buffer();
-  flush_TX_buffer();
-
+	radio.write_payload(sendbyte, 32, status_address);
 }
 
 uint8_t nrf24_radio::read_register(uint8_t reg){
@@ -119,41 +145,76 @@ uint8_t nrf24_radio::get_status(void){
 
 uint8_t nrf24_radio::flush_RX_buffer(void){
 	radio.send_command(0xE2, status_address);
+	status_data |= 0x40;
+	radio.write_register(0x07, status_data, status_address);
 	return status_data;
 }
 
 uint8_t nrf24_radio::flush_TX_buffer(void){
 	radio.send_command(0xE1, status_address);
+	status_data |= 0x30;
+	radio.write_register(0x07, status_data, status_address);
 	return status_data;
 }
 
-uint8_t nrf24_radio::auto_acknowledge(uint8_t data){
+uint8_t nrf24_radio::setup_auto_acknowledge(void){
 //bits 0 - 5 correspond to AA on data pipe 0 - 5
-	radio.write_register(0x01, data, status_address);
+	radio.write_register(0x01, auto_ack, status_address);
 	return status_data;
 }
 
-uint8_t nrf24_radio::enable_RX_addr(uint8_t data){
+uint8_t nrf24_radio::setup_en_RX_addr(void){
 //bits 0 - 5 correspond to AA on data pipe 0 - 5
-	radio.write_register(0x02, data, status_address);
+	radio.write_register(0x02, en_RX_addr, status_address);
 	return status_data;
 }
 
-uint8_t nrf24_radio::address_width(uint8_t data){
-//decimal 1 = 3 ints
-//decimal 2 = 4 ints
-//decimal 3 = 5 ints
-	radio.write_register(0x03, data, status_address);
+uint8_t nrf24_radio::setup_addr_width(void){
+//decimal 1 = 3 bytes
+//decimal 2 = 4 bytes
+//decimal 3 = 5 bytes
+	radio.write_register(0x03, addr_width, status_address);
 	return status_data;
 }
 
-uint8_t nrf24_radio::setup_retransmit(uint8_t data){
-	radio.write_register(0x04, data, status_address);
+uint8_t nrf24_radio::setup_retransmit(void){
+	radio.write_register(0x04, retransmit, status_address);
 	return status_data;
 }
 
-uint8_t nrf24_radio::setup_frequency(uint8_t data){
-	radio.write_register(0x05, data, status_address);
+uint8_t nrf24_radio::setup_frequency(void){
+	radio.write_register(0x05, frequency, status_address);
+	return status_data;
+}
+
+uint8_t nrf24_radio::setup_RF_param(void){
+
+	uint8_t data = 0;
+
+	if(carrier != 0)&&(carrier != 1)
+	{
+		carrier = 0;
+	}
+	data = data + carrier*0x80;
+
+	if(RF_power < 0)||(RF_power > 3)
+	{
+		RF_power = 0;
+	}
+	data = data + RF_power*0x02
+
+	switch(data_rate){
+		case 0: //250kbps
+			data = data + 0x20;
+		case 1: //1Mbps
+		case 2: //2Mbps
+			data = data + 0x08;
+		default:
+			data_rate = 0;
+			data = data + 0x20;
+	}
+
+	radio.write_register(0x06, data, status_address);
 	return status_data;
 }
 

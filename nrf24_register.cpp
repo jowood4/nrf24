@@ -71,12 +71,6 @@ void nrf24_register::write_register(uint8_t address, uint8_t data, uint8_t *stat
  
 }
 
-void nrf24_register::powerOFF(uint8_t *status){
-
-    write_register(0x00, 0x00, status);
-
-}
-
 void nrf24_register::set_rw_address(uint8_t address, uint8_t *data, uint8_t num_bytes, uint8_t *status){
 
 	address &= 0x1F;
