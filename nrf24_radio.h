@@ -32,6 +32,8 @@ class nrf24_radio{
 	uint8_t setup_retransmit(void);
 	uint8_t setup_addr_width(void);
 	uint8_t setup_en_RX_addr(void);
+	uint8_t setup_RF_param(void);
+	uint8_t refresh(void);
 
 	uint8_t *address_array;
 	uint8_t byteread;
