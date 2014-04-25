@@ -19,7 +19,7 @@ nrf24_radio::nrf24_radio(void){
 	transmit_address[4] = 0x01;
 }
 
-void nrf24_radio::refresh(void){
+uint8_t nrf24_radio::refresh(void){
 
   //radio.write_register(0x01, 0x01, status_address); //auto_ack
   //radio.write_register(0x02, 0x01, status_address); //en_RX_addr
@@ -37,6 +37,7 @@ void nrf24_radio::refresh(void){
 
 	radio.set_rw_address(0x10, transmit_address, 5, status_address); //TX addr
 	radio.set_rw_address(0x0A, transmit_address, 5, status_address); //RX0 addr
+	return status_data;
 }
 
 uint8_t nrf24_radio::powerOFF(void){
@@ -191,17 +192,17 @@ uint8_t nrf24_radio::setup_RF_param(void){
 
 	uint8_t data = 0;
 
-	if(carrier != 0)&&(carrier != 1)
+	if((carrier != 0)&&(carrier != 1))
 	{
 		carrier = 0;
 	}
 	data = data + carrier*0x80;
 
-	if(RF_power < 0)||(RF_power > 3)
+	if((RF_power < 0)||(RF_power > 3))
 	{
 		RF_power = 0;
 	}
-	data = data + RF_power*0x02
+	data = data + RF_power*0x02;
 
 	switch(data_rate){
 		case 0: //250kbps
