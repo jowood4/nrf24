@@ -58,6 +58,8 @@ class nrf24_radio{
 	uint8_t data_rate;
 	uint8_t carrier;
 
+	uint8_t tx_buffer[32];
+
 	//FIFO addresses
 	uint8_t transmit_address[5];
 	uint8_t receive_address0[5];
@@ -68,8 +70,6 @@ class nrf24_radio{
 	uint8_t receive_address5[5];
 
   private:
-
-	uint8_t tx_buffer[32];
 
 	//uint8_t *address_array;
 	uint8_t byteread;
