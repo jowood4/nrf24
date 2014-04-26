@@ -51,19 +51,19 @@ class nrf24_radio{
 	uint8_t data_rate;
 	uint8_t carrier;
 
-	uint8_t* transmit_address;
-	uint8_t* receive_address0;
-	uint8_t* receive_address1;
-	uint8_t* receive_address2;
-	uint8_t* receive_address3;
-	uint8_t* receive_address4;
-	uint8_t* receive_address5;
+	uint8_t transmit_address[5];
+	uint8_t receive_address0[5];
+	uint8_t receive_address1[5];
+	uint8_t receive_address2[5];
+	uint8_t receive_address3[5];
+	uint8_t receive_address4[5];
+	uint8_t receive_address5[5];
 
 	uint8_t received_bytes;
 	uint8_t current_FIFO;
 	uint8_t sendbyte[32];
 
-	uint8_t *address_array;
+	//uint8_t *address_array;
 	uint8_t byteread;
 	uint8_t *status_address;
 	uint8_t status_data;
