@@ -298,11 +298,11 @@ uint8_t nrf24_radio::setup_receive_address(void){
 	return status_data;
 }
 
-void write_array(uint8_t array, uint8_t index, uint8_t data){
+void write_array(uint8_t* array, uint8_t index, uint8_t data){
 	array[index] = data;
 }
 	
-uint8_t read_array(uint8_t array, uint8_t index){
+uint8_t read_array(uint8_t* array, uint8_t index){
 	return array[index];
 }
 

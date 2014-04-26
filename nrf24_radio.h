@@ -42,8 +42,8 @@ class nrf24_radio{
 	uint8_t refresh(void);
 
 	//Simplifiy SWIG.  Hopefully get rid of these
-	void write_array(uint8_t array, uint8_t index, uint8_t data);
-	uint8_t read_array(uint8_t array, uint8_t index);
+	void write_array(uint8_t* array, uint8_t index, uint8_t data);
+	uint8_t read_array(uint8_t* array, uint8_t index);
 
 	nrf24_register radio;
 
