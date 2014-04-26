@@ -52,12 +52,12 @@ class nrf24_radio{
 	uint8_t carrier;
 
 	uint8_t* transmit_address;
-	uint8_t* receive0_address;
-	uint8_t* receive1_address;
-	uint8_t* receive2_address;
-	uint8_t* receive3_address;
-	uint8_t* receive4_address;
-	uint8_t* receive5_address;
+	uint8_t* receive_address0;
+	uint8_t* receive_address1;
+	uint8_t* receive_address2;
+	uint8_t* receive_address3;
+	uint8_t* receive_address4;
+	uint8_t* receive_address5;
 
 	uint8_t received_bytes;
 	uint8_t current_FIFO;
