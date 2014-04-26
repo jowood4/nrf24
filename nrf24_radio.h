@@ -22,7 +22,8 @@ class nrf24_radio{
 	uint8_t write_register(uint8_t reg, uint8_t data);
 	uint8_t read_payload(uint8_t* read_buffer, uint8_t num_bytes);
 	uint8_t write_payload(uint8_t* data, uint8_t num_bytes);
-	uint8_t get_status(void);	
+	uint8_t get_status(void);
+	uint8_t get_pipe_numbytes(uint8_t* pipe, uint8_t* bytes);
 	uint8_t flush_TX_buffer(void);
 	uint8_t flush_RX_buffer(void);
 	uint8_t bytes_received(void);
