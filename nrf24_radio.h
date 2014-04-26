@@ -33,13 +33,11 @@ class nrf24_radio{
 	uint8_t setup_addr_width(void);
 	uint8_t setup_en_RX_addr(void);
 	uint8_t setup_RF_param(void);
+	uint8_t setup_transmit_address(void);
+	uint8_t setup_receive_address(void);
 	uint8_t refresh(void);
 
-	uint8_t *address_array;
-	uint8_t byteread;
 	nrf24_register radio;
-	uint8_t *status_address;
-	uint8_t status_data;
 
    private:
 	//Radio settings
@@ -53,10 +51,18 @@ class nrf24_radio{
 	uint8_t data_rate;
 	uint8_t carrier;
 
+	uint8_t* transmit_address;
+	uint8_t* receive_address[6];
+
 	uint8_t received_bytes;
 	uint8_t current_FIFO;
 	uint8_t sendbyte[32];
-	uint8_t transmit_address[5];
+
+	uint8_t *address_array;
+	uint8_t byteread;
+	uint8_t *status_address;
+	uint8_t status_data;
+
 	uint8_t read_byte;
 	uint8_t data;
 };

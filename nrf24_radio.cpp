@@ -3,7 +3,7 @@
 nrf24_radio::nrf24_radio(void){
 	auto_ack = 0x01;
 	en_RX_addr = 0x01;
-	addr_width = 0x03;
+	addr_width = 5;
 	retransmit = 0x1A;
 	frequency = 0x70;
 	RF_power = 0;
@@ -12,11 +12,13 @@ nrf24_radio::nrf24_radio(void){
 	use_IRQ = 0;
 
 	status_address = &status_data;
-	transmit_address[0] = 0x01;
-	transmit_address[1] = 0x01;
-	transmit_address[2] = 0x01;
-	transmit_address[3] = 0x01;
-	transmit_address[4] = 0x01;
+
+	for(int i = 0; i < addr_width; i++){
+		transmit_address[i] = 0x01;
+		for(int j = 0; j < 6; j++){
+			receive_address[j][i] = 0x01;
+		}
+	}
 }
 
 uint8_t nrf24_radio::refresh(void){
@@ -34,9 +36,22 @@ uint8_t nrf24_radio::refresh(void){
 	setup_addr_width();
 	setup_en_RX_addr();
 	setup_RF_param();
+	setup_transmit_address();
+	setup_receive_address();
+}
 
-	radio.set_rw_address(0x10, transmit_address, 5, status_address); //TX addr
-	radio.set_rw_address(0x0A, transmit_address, 5, status_address); //RX0 addr
+uint8_t nrf24_radio::setup_transmit_address(void){
+	radio.set_rw_address(0x10, transmit_address, addr_width, status_address);
+	return status_data;
+}
+
+uint8_t nrf24_radio::setup_receive_address(void){
+	radio.set_rw_address(0x0A, receive_address[0], addr_width, status_address);
+	radio.set_rw_address(0x0B, receive_address[1], addr_width, status_address);
+	radio.set_rw_address(0x0C, receive_address[2], addr_width, status_address);
+	radio.set_rw_address(0x0D, receive_address[3], addr_width, status_address);
+	radio.set_rw_address(0x0E, receive_address[4], addr_width, status_address);
+	radio.set_rw_address(0x0F, receive_address[5], addr_width, status_address);
 	return status_data;
 }
 
@@ -55,6 +70,31 @@ uint8_t nrf24_radio::powerON(void){
 void nrf24_radio::setup(uint8_t csn, uint8_t ce){
 
 	radio.setup(csn, ce);
+	radio.write_CE(0);
+  	radio.write_CSN(1);
+
+	for(uint8_t i = 0; i<32;i++)
+	{
+  		sendbyte[i] = 0xAA;
+	}
+
+	powerOFF();
+	refresh();
+
+  	flush_RX_buffer();
+  	flush_TX_buffer();
+
+  	powerON();
+  	delay(2);
+
+	//address_array = radio.read_rw_address(0x0A, address_array, status_address);
+
+	radio.write_payload(sendbyte, 32, status_address);
+}
+
+void nrf24_radio::setup(uint8_t csn, uint8_t ce, uint8_t irq){
+
+	radio.setup(csn, ce, irq);
 	radio.write_CE(0);
   	radio.write_CSN(1);
 
@@ -174,7 +214,7 @@ uint8_t nrf24_radio::setup_addr_width(void){
 //decimal 1 = 3 bytes
 //decimal 2 = 4 bytes
 //decimal 3 = 5 bytes
-	radio.write_register(0x03, addr_width, status_address);
+	radio.write_register(0x03, addr_width-2, status_address);
 	return status_data;
 }
 
