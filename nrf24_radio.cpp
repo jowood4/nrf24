@@ -76,7 +76,7 @@ uint8_t nrf24_radio::write_payload(uint8_t* data, uint8_t num_bytes){
 }
 
 uint8_t nrf24_radio::read_payload(uint8_t* read_buffer, uint8_t num_bytes){
-	read_data = radio.read_payload(num_bytes, address, status_address);
+	read_buffer = radio.read_payload(num_bytes, read_buffer, status_address);
 	return status_data;
 }
 
