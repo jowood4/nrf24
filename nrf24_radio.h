@@ -19,6 +19,9 @@ class nrf24_radio{
 
 	//Radio commands
 	uint8_t read_register(uint8_t register);
+	uint8_t write_register(uint8_t register, uint8_t data);
+	uint8_t* read_payload(uint8_t address, uint8_t num_bytes);
+	uint8_t write_payload(uint8_t* data, uint8_t num_bytes);
 	uint8_t get_status(void);	
 	uint8_t flush_TX_buffer(void);
 	uint8_t flush_RX_buffer(void);
@@ -39,7 +42,6 @@ class nrf24_radio{
 
 	nrf24_register radio;
 
-   private:
 	//Radio settings
 	uint8_t auto_ack;
 	uint8_t en_RX_addr;
@@ -58,6 +60,8 @@ class nrf24_radio{
 	uint8_t receive_address3[5];
 	uint8_t receive_address4[5];
 	uint8_t receive_address5[5];
+
+  private:
 
 	uint8_t received_bytes;
 	uint8_t current_FIFO;

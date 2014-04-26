@@ -70,6 +70,17 @@ uint8_t nrf24_radio::powerON(void){
 	return status_data;
 }
 
+uint8_t nrf24_radio::write_payload(uint8_t* data, uint8_t num_bytes){
+	radio.write_payload(data, num_bytes, status_address);
+	return status_data;
+}
+
+uint8_t* nrf24_radio::read_payload(uint8_t* address, uint8_t num_bytes){
+	uint8_t* read_data;
+	read_data = radio.read_payload(num_bytes, address, status_address);
+	return read_data;
+}
+
 void nrf24_radio::setup(uint8_t csn, uint8_t ce){
 
 	radio.setup(csn, ce);
