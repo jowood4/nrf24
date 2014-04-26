@@ -15,9 +15,12 @@ nrf24_radio::nrf24_radio(void){
 
 	for(int i = 0; i < addr_width; i++){
 		transmit_address[i] = 0x01;
-		for(int j = 0; j < 6; j++){
-			receive_address[j][i] = 0x01;
-		}
+		receive_address0[i] = 0x01;
+		receive_address1[i] = 0x01;
+		receive_address2[i] = 0x01;
+		receive_address3[i] = 0x01;
+		receive_address4[i] = 0x01;
+		receive_address5[i] = 0x01;
 	}
 }
 
@@ -46,12 +49,12 @@ uint8_t nrf24_radio::setup_transmit_address(void){
 }
 
 uint8_t nrf24_radio::setup_receive_address(void){
-	radio.set_rw_address(0x0A, receive_address[0], addr_width, status_address);
-	radio.set_rw_address(0x0B, receive_address[1], addr_width, status_address);
-	radio.set_rw_address(0x0C, receive_address[2], addr_width, status_address);
-	radio.set_rw_address(0x0D, receive_address[3], addr_width, status_address);
-	radio.set_rw_address(0x0E, receive_address[4], addr_width, status_address);
-	radio.set_rw_address(0x0F, receive_address[5], addr_width, status_address);
+	radio.set_rw_address(0x0A, receive_address0, addr_width, status_address);
+	radio.set_rw_address(0x0B, receive_address1, addr_width, status_address);
+	radio.set_rw_address(0x0C, receive_address2, addr_width, status_address);
+	radio.set_rw_address(0x0D, receive_address3, addr_width, status_address);
+	radio.set_rw_address(0x0E, receive_address4, addr_width, status_address);
+	radio.set_rw_address(0x0F, receive_address5, addr_width, status_address);
 	return status_data;
 }
 
