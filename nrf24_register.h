@@ -18,6 +18,7 @@ class nrf24_register{
    public:
 	nrf24_register();
 	void setup(uint8_t csn, uint8_t ce);
+	void setup(uint8_t csn, uint8_t ce, uint8_t irq);
 	uint8_t read_register(uint8_t address, uint8_t *status);
 	uint8_t* read_payload(uint8_t num_bytes, uint8_t *payload_address, uint8_t *status);
 	void write_register(uint8_t address, uint8_t data, uint8_t *status);

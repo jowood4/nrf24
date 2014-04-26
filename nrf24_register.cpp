@@ -12,6 +12,16 @@ void nrf24_register::setup(uint8_t csn, uint8_t ce){
         SPI_nrf.set_pinMode(_CE, OUTPUT);
 }
 
+void nrf24_register::setup(uint8_t csn, uint8_t ce, uint8_t irq){
+  	SPI_nrf.setup();
+        _CSN = csn;
+        _CE = ce;
+	_IRQ = irq;
+        SPI_nrf.set_pinMode(_CSN, OUTPUT);
+        SPI_nrf.set_pinMode(_CE, OUTPUT);
+	SPI_nrf.set_pinMode(_IRQ, INPUT);
+}
+
 void nrf24_register::write_CSN(uint8_t num){
  	SPI_nrf.write_pin(_CSN, num);
  //digitalWrite(_CSN, num);
