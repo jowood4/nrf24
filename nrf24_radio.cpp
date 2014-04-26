@@ -75,8 +75,8 @@ uint8_t nrf24_radio::write_payload(uint8_t* data, uint8_t num_bytes){
 	return status_data;
 }
 
-uint8_t nrf24_radio::write_register(uint8_t register, uint8_t data){
-	radio.write_register(register, data, status_address);
+uint8_t nrf24_radio::write_register(uint8_t reg, uint8_t data){
+	radio.write_register(reg, data, status_address);
 	return status_data;
 }
 

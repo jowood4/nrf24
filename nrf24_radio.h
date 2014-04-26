@@ -18,8 +18,8 @@ class nrf24_radio{
 	void transmitter_mode(uint8_t *send_data, uint8_t num_bytes);
 
 	//Radio commands
-	uint8_t read_register(uint8_t register);
-	uint8_t write_register(uint8_t register, uint8_t data);
+	uint8_t read_register(uint8_t reg);
+	uint8_t write_register(uint8_t reg, uint8_t data);
 	uint8_t read_payload(uint8_t* read_buffer, uint8_t num_bytes);
 	uint8_t write_payload(uint8_t* data, uint8_t num_bytes);
 	uint8_t get_status(void);	
