@@ -39,6 +39,7 @@ class nrf24_radio{
 	uint8_t setup_RF_param(void);
 	uint8_t setup_transmit_address(void);
 	uint8_t setup_receive_address(void);
+	uint8_t setup_data_width(void);
 	uint8_t refresh(void);
 
 	//Simplifiy SWIG.  Hopefully get rid of these
@@ -71,6 +72,7 @@ class nrf24_radio{
 	uint8_t receive_address3[5];
 	uint8_t receive_address4[5];
 	uint8_t receive_address5[5];
+	uint8_t data_width[6];
 
   private:
 

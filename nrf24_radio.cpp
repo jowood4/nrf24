@@ -29,6 +29,11 @@ nrf24_radio::nrf24_radio(void){
 	{
   		tx_buffer[i] = 0x00;
 	}
+
+	for(uint8_t i = 0; i < 6; i++)
+	{
+  		data_width[i] = 0x20;
+	}
 }
 
 uint8_t nrf24_radio::refresh(void){
@@ -48,6 +53,7 @@ uint8_t nrf24_radio::refresh(void){
 	setup_RF_param();
 	setup_transmit_address();
 	setup_receive_address();
+	setup_data_width();
 }
 
 
@@ -155,7 +161,7 @@ uint8_t nrf24_radio::bytes_received(void){
 	}
 	else{
 		get_status();
-		if((status_data & 0x20) > 0){
+		if((status_data & 0x40) > 0){
 			return 1;
 		}
 		else{
@@ -313,6 +319,15 @@ uint8_t nrf24_radio::setup_receive_address(void){
 	radio.set_rw_address(0x0E, receive_address4, addr_width, status_address);
 	radio.set_rw_address(0x0F, receive_address5, addr_width, status_address);
 	return status_data;
+}
+
+uint8_t nrf24_radio::setup_data_width(void){
+	radio.write_register(0x11, data_width[0], status_address);
+	radio.write_register(0x12, data_width[1], status_address);
+	radio.write_register(0x13, data_width[2], status_address);
+	radio.write_register(0x14, data_width[3], status_address);
+	radio.write_register(0x15, data_width[4], status_address);
+	radio.write_register(0x16, data_width[5], status_address);
 }
 
 void nrf24_radio::write_array(uint8_t* array, uint8_t index, uint8_t data){
