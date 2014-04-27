@@ -193,12 +193,8 @@ uint8_t nrf24_radio::get_pipe_numbytes(uint8_t* pipe, uint8_t* bytes){
 }
 
 void nrf24_radio::transmitter_mode(void){
-	
-	//send data to buffer and put in transmit mode
-	radio.write_CE(0);
-	write_payload(tx_buffer, 32);
-	radio.write_register(0x00, 0x4E, status_address);
-	
+
+	uint8_t data = 0;
 
 	data = data + (crc_en * 0x08);
 	data = data + (crc_bytes * 0x04);
@@ -208,6 +204,11 @@ void nrf24_radio::transmitter_mode(void){
 	if(!use_IRQ){
 		data = data + 0x30;
 	}
+	
+	//send data to buffer and put in transmit mode
+	radio.write_CE(0);
+	write_payload(tx_buffer, 32);
+
 	write_register(0x00, data);
 
 	powerON();
