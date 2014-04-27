@@ -253,6 +253,11 @@ uint8_t nrf24_radio::setup_RF_param(void){
 
 	uint8_t data = 0;
 
+        if(data_rate == 0){ data = data + 0x20; }//250kbps
+	else if(data_rate == 1){ data = data + 0x00;}//1Mbps
+        else if(data_rate == 2){ data = data + 0x08;}//2Mbps
+        else { data_rate = 0; data = data + 0x20; }
+
 	if((carrier != 0)&&(carrier != 1)){
 		carrier = 0;
 	}
@@ -263,18 +268,6 @@ uint8_t nrf24_radio::setup_RF_param(void){
 	}
 	
 	data = data + RF_power*0x02;
-
-	switch(data_rate){
-		case 0: //250kbps
-			data = data + 0x20;
-		case 1: //1Mbps
-			data = data + 0x00;
-		case 2: //2Mbps
-			data = data + 0x08;
-		default:
-			data_rate = 0;
-			data = data + 0x20;
-	}
 
 	radio.write_register(0x06, data, status_address);
 	return status_data;
