@@ -10,6 +10,8 @@ nrf24_radio::nrf24_radio(void){
 	data_rate = 0;
 	carrier = 0;
 	use_IRQ = 0;
+	crc_bytes = 1;
+	crc_en = 1;
 
 	status_address = &status_data;
 
@@ -122,17 +124,21 @@ uint8_t nrf24_radio::read_register(uint8_t reg){
 
 void nrf24_radio::receiver_start(void){
 
-	uint8_t reg0;
+	uint8_t data = 0;
 
     	//clear buffers
     	radio.write_CE(0);
 	flush_RX_buffer();
 
+	data = data + (crc_en * 0x08);
+	data = data + (crc_bytes * 0x04);
+	data = data + 0x31;  //disables TX IRQ and enables PRX
+
     	//get in RX mode
-	if(use_IRQ){
-		reg0 = read_register(0x00);
-		write_register(0x00, reg0 | 0x40);
+	if(!use_IRQ){
+		data = data + 0x40;
 	}
+	write_register(0x00, data);
 
     	powerON();
     	radio.write_CE(1);
@@ -192,6 +198,19 @@ void nrf24_radio::transmitter_mode(void){
 	radio.write_CE(0);
 	write_payload(tx_buffer, 32);
 	radio.write_register(0x00, 0x4E, status_address);
+	
+
+	data = data + (crc_en * 0x08);
+	data = data + (crc_bytes * 0x04);
+	data = data + 0x40;  //disables RX IRQ and enables PTX
+
+    	//get in RX mode
+	if(!use_IRQ){
+		data = data + 0x30;
+	}
+	write_register(0x00, data);
+
+	powerON();
 	radio.write_CE(1);
 	delay(50);
 

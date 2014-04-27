@@ -57,6 +57,8 @@ class nrf24_radio{
 	uint8_t RF_power;
 	uint8_t data_rate;
 	uint8_t carrier;
+	uint8_t crc_bytes;
+	uint8_t crc_en;
 
 	uint8_t tx_buffer[32];
 	uint8_t rx_buffer[32];
