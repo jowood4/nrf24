@@ -122,11 +122,18 @@ uint8_t nrf24_radio::read_register(uint8_t reg){
 
 void nrf24_radio::receiver_start(void){
 
+	uint8_t reg0;
+
     	//clear buffers
     	radio.write_CE(0);
 	flush_RX_buffer();
 
     	//get in RX mode
+	if(use_IRQ){
+		reg0 = read_register(0x00);
+		write_register(0x00, reg0 | 0x40);
+	}
+
     	powerON();
     	radio.write_CE(1);
     	delay(200);
@@ -138,7 +145,7 @@ void nrf24_radio::receiver_stop(void){
 
 uint8_t nrf24_radio::bytes_received(void){
 	if(use_IRQ){
-		return radio.read_IRQ();
+		return !radio.read_IRQ();
 	}
 	else{
 		get_status();
