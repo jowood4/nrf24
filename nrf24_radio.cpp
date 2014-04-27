@@ -53,13 +53,13 @@ uint8_t nrf24_radio::refresh(void){
 
 uint8_t nrf24_radio::powerOFF(void){
 	data = read_register(0x00);
-    	radio.write_register(0x00, data&0xFE, status_address);
+    	radio.write_register(0x00, data&0xFD, status_address);
 	return status_data;
 }
 
 uint8_t nrf24_radio::powerON(void){
 	data = read_register(0x00);
-    	radio.write_register(0x00, data|0x01, status_address);
+    	radio.write_register(0x00, data|0x02, status_address);
 	return status_data;
 }
 
