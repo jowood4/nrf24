@@ -79,6 +79,7 @@ uint8_t nrf24_radio::read_payload(uint8_t* read_buffer, uint8_t num_bytes){
 void nrf24_radio::setup(uint8_t csn, uint8_t ce){
 
 	radio.setup(csn, ce);
+	use_IRQ = 0;
 	radio.write_CE(0);
   	radio.write_CSN(1);
 
@@ -99,6 +100,7 @@ void nrf24_radio::setup(uint8_t csn, uint8_t ce){
 void nrf24_radio::setup(uint8_t csn, uint8_t ce, uint8_t irq){
 
 	radio.setup(csn, ce, irq);
+	use_IRQ = 1;
 	radio.write_CE(0);
   	radio.write_CSN(1);
 
@@ -259,12 +261,14 @@ uint8_t nrf24_radio::setup_RF_param(void){
 	if((RF_power < 0)||(RF_power > 3)){
 		RF_power = 0;
 	}
+	
 	data = data + RF_power*0x02;
 
 	switch(data_rate){
 		case 0: //250kbps
 			data = data + 0x20;
 		case 1: //1Mbps
+			data = data + 0x00;
 		case 2: //2Mbps
 			data = data + 0x08;
 		default:
