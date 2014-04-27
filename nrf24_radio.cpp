@@ -227,7 +227,7 @@ void nrf24_radio::transmitter_mode(void){
 			delay(5);
 		}
 	}
-	else
+	else{
 		get_status();
 		while((status_data & 0x20) == 0)
 		{
