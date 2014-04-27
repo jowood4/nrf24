@@ -163,7 +163,7 @@ uint8_t nrf24_radio::receiver_mode(void){
       
 		flush_RX_buffer();
 
-	      	return uint8_t(1);
+	      	return bytes;
 	}
 	else{
 		radio.write_CE(1);
