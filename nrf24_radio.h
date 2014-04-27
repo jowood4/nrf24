@@ -12,10 +12,10 @@ class nrf24_radio{
 	//High level functions
 	void setup(uint8_t csn, uint8_t ce);
 	void setup(uint8_t csn, uint8_t ce, uint8_t irq);
-	uint8_t receiver_mode(uint8_t *rec_data);
+	uint8_t receiver_mode(void);
 	void receiver_stop(void);
 	void receiver_start(void);
-	void transmitter_mode(uint8_t *send_data, uint8_t num_bytes);
+	void transmitter_mode(void);
 
 	//Radio commands
 	uint8_t read_register(uint8_t reg);
@@ -59,6 +59,7 @@ class nrf24_radio{
 	uint8_t carrier;
 
 	uint8_t tx_buffer[32];
+	uint8_t rx_buffer[32];
 
 	//FIFO addresses
 	uint8_t transmit_address[5];

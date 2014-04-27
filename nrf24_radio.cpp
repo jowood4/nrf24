@@ -149,7 +149,7 @@ uint8_t nrf24_radio::bytes_received(void){
 	}
 }
 
-uint8_t nrf24_radio::receiver_mode(uint8_t *rec_data){
+uint8_t nrf24_radio::receiver_mode(void){
 
 	if(bytes_received()){
 
@@ -157,11 +157,11 @@ uint8_t nrf24_radio::receiver_mode(uint8_t *rec_data){
 		uint8_t bytes;
 		get_pipe_numbytes(&pipe, &bytes);
       
-      		read_payload(rec_data, bytes);
+      		read_payload(rx_buffer, bytes);
       
 		flush_RX_buffer();
 
-	      	return status_data;
+	      	return uint8_t(1);
 	}
 	else{
 		radio.write_CE(1);
@@ -177,11 +177,11 @@ uint8_t nrf24_radio::get_pipe_numbytes(uint8_t* pipe, uint8_t* bytes){
 	return status_data;
 }
 
-void nrf24_radio::transmitter_mode(uint8_t *send_data, uint8_t num_bytes){
+void nrf24_radio::transmitter_mode(void){
 	
 	//send data to buffer and put in transmit mode
 	radio.write_CE(0);
-	write_payload(send_data, num_bytes);
+	write_payload(tx_buffer, 32);
 	radio.write_register(0x00, 0x4E, status_address);
 	radio.write_CE(1);
 	delay(50);
