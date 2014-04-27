@@ -220,13 +220,21 @@ void nrf24_radio::transmitter_mode(void){
 	powerON();
 	radio.write_CE(1);
 	delay(50);
-
-	//radio.send_command(0xFF, status_address);
-	//while(bitRead(status_data,5) == 0)
-	//{
-	//	radio.send_command(0xFF, status_address);
-	//	delay(5);
-	//}
+	
+	if(use_IRQ){
+		while(!radio.read_IRQ())
+		{
+			delay(5);
+		}
+	}
+	else
+		get_status();
+		while((status_data & 0x20) == 0)
+		{
+			get_status();
+			delay(5);
+		}
+	}
 
 	radio.write_CE(0);	
 	flush_TX_buffer();
