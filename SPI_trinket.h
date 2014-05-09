@@ -7,25 +7,14 @@
 #include "WProgram.h"
 #endif
 
-#define CLOCK 2
-#define DWRITE 0
-#define DREAD 1
-
 class SPI_trinket
 {
 public:
-      	void setup(byte csn, byte ce);
-      	int spi_shift(int data_write);
-	void write_pin(int pin, int val);
-	int read_pin(int pin);
-	    
-private:
-      	byte _CE;
-      	byte _CSN;
-      	byte _CLK;    
-      	byte _MOSI;
-      	byte _MISO;
-	byte _IRQ;
+      	void setup(void);
+	void set_pinMode(uint8_t pin, uint8_t direction);
+      	uint8_t spi_shift(uint8_t data_write);
+	void write_pin(uint8_t pin, uint8_t val);
+	uint8_t read_pin(uint8_t pin);
 };
 
 #endif

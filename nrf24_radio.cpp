@@ -54,6 +54,7 @@ uint8_t nrf24_radio::refresh(void){
 	setup_transmit_address();
 	setup_receive_address();
 	setup_data_width();
+	return status_data;
 }
 
 
@@ -88,27 +89,36 @@ void nrf24_radio::setup(uint8_t csn, uint8_t ce){
 
 	radio.setup(csn, ce);
 	use_IRQ = 0;
-	radio.write_CE(0);
-  	radio.write_CSN(1);
 
-	powerOFF();
-	refresh();
+	init();
+}
 
-  	flush_RX_buffer();
-  	flush_TX_buffer();
+void nrf24_radio::setup(uint8_t csn, uint8_t ce, uint8_t clk, uint8_t mosi, uint8_t miso){
 
-  	powerON();
-  	delay(2);
+	radio.setup(csn, ce, clk, mosi, miso);
+	use_IRQ = 0;
 
-	//address_array = radio.read_rw_address(0x0A, address_array, status_address);
-
-	radio.write_payload(tx_buffer, 32, status_address);
+	init();
 }
 
 void nrf24_radio::setup(uint8_t csn, uint8_t ce, uint8_t irq){
 
 	radio.setup(csn, ce, irq);
 	use_IRQ = 1;
+
+	init();
+}
+
+void nrf24_radio::setup(uint8_t csn, uint8_t ce, uint8_t clk, uint8_t mosi, uint8_t miso, uint8_t irq){
+
+	radio.setup(csn, ce, clk, mosi, miso, irq);
+	use_IRQ = 1;
+
+	init();
+}
+
+void nrf24_radio::init(void){
+
 	radio.write_CE(0);
   	radio.write_CSN(1);
 
@@ -336,6 +346,7 @@ uint8_t nrf24_radio::setup_data_width(void){
 	radio.write_register(0x14, data_width[3], status_address);
 	radio.write_register(0x15, data_width[4], status_address);
 	radio.write_register(0x16, data_width[5], status_address);
+	return status_data;
 }
 
 void nrf24_radio::write_array(uint8_t* array, uint8_t index, uint8_t data){

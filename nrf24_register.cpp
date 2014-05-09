@@ -1,5 +1,8 @@
 #include "nrf24_register.h"
 
+#define OUTPUT 1
+#define INPUT 0
+
 nrf24_register::nrf24_register(){
 
 }
@@ -22,14 +25,42 @@ void nrf24_register::setup(uint8_t csn, uint8_t ce, uint8_t irq){
 	SPI_nrf.set_pinMode(_IRQ, INPUT);
 }
 
+void nrf24_register::setup(uint8_t csn, uint8_t ce, uint8_t clk, uint8_t mosi, uint8_t miso){
+  	SPI_nrf.setup();
+        _CSN = csn;
+        _CE = ce;
+	_CLK = clk;
+	_MOSI = mosi;
+	_MISO = miso;
+        SPI_nrf.set_pinMode(_CSN, OUTPUT);
+        SPI_nrf.set_pinMode(_CE, OUTPUT);
+	SPI_nrf.set_pinMode(_CLK, OUTPUT);
+	SPI_nrf.set_pinMode(_MOSI, OUTPUT);
+	SPI_nrf.set_pinMode(_MISO, INPUT);
+	SPI_nrf.set_pinMode(_IRQ, INPUT);
+}
+
+void nrf24_register::setup(uint8_t csn, uint8_t ce, uint8_t clk, uint8_t mosi, uint8_t miso, uint8_t irq){
+  	SPI_nrf.setup();
+        _CSN = csn;
+        _CE = ce;
+	_CLK = clk;
+	_MOSI = mosi;
+	_MISO = miso;
+	_IRQ = irq;
+        SPI_nrf.set_pinMode(_CSN, OUTPUT);
+        SPI_nrf.set_pinMode(_CE, OUTPUT);
+	SPI_nrf.set_pinMode(_CLK, OUTPUT);
+	SPI_nrf.set_pinMode(_MOSI, OUTPUT);
+	SPI_nrf.set_pinMode(_MISO, INPUT);
+	SPI_nrf.set_pinMode(_IRQ, INPUT);
+}
+
 void nrf24_register::write_CSN(uint8_t num){
  	SPI_nrf.write_pin(_CSN, num);
- //digitalWrite(_CSN, num);
 }
 
 void nrf24_register::write_CE(uint8_t num){
-
- //digitalWrite(_CE, num);
  	SPI_nrf.write_pin(_CE, num);
 }
 

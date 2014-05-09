@@ -1,3 +1,7 @@
+//#ifdef __cplusplus
+//extern "C" {
+//#endif
+
 #ifndef NRF24_RADIO_H
 #define NRF24_RADIO_H
 
@@ -9,9 +13,14 @@ class nrf24_radio{
    public:
 	nrf24_radio();
 
-	//High level functions
+	//Setup functions
 	void setup(uint8_t csn, uint8_t ce);
 	void setup(uint8_t csn, uint8_t ce, uint8_t irq);
+	void setup(uint8_t csn, uint8_t ce, uint8_t clk, uint8_t mosi, uint8_t miso);
+	void setup(uint8_t csn, uint8_t ce, uint8_t clk, uint8_t mosi, uint8_t miso, uint8_t irq);
+	void init(void);
+
+	//High level functions
 	uint8_t receiver_mode(void);
 	void receiver_stop(void);
 	void receiver_start(void);
@@ -85,4 +94,8 @@ class nrf24_radio{
 	uint8_t data;
 };
 
-#endif		
+#endif
+
+//#ifdef __cplusplus
+//}
+//#endif

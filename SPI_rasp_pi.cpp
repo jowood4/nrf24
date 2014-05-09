@@ -1,8 +1,5 @@
 #include "SPI_rasp_pi.h"
 
-#define OUTPUT 1
-#define INPUT 0
-
 void SPI_rasp_pi::setup(void){
 	wiringPiSetup();
 	wiringPiSPISetup(0, 500000);
