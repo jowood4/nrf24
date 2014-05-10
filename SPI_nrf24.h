@@ -3,7 +3,7 @@
 
 #include <stdint.h>
 
-#define NRF_RASP_PI 1
+#define NRF_TRINKET 1
 
 #if defined(NRF_RASP_PI)
 
