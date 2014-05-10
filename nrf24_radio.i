@@ -5,16 +5,16 @@
 //%include "typemaps.i"
 //%include "stdint.i"
 
+%apply unsigned char { uint8_t };
+
 %{
   #include "nrf24_radio.h"
   #include "nrf24_register.h"
-  #include "SPI_rasp_pi.h"
+  #include "SPI_nrf24.h"
 %}
-
-%apply unsigned char { uint8_t };
  
  // Parse the original header file
  %include "nrf24_radio.h"
  %include "nrf24_register.h"
- %include "SPI_rasp_pi.h"
+ %include "SPI_nrf24.h"
 

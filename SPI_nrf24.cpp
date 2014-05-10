@@ -39,6 +39,13 @@ void SPI_nrf24::setup(void){
   SPCR |= _BV(SPE);
 }
 
+void SPI_nrf24::setup(uint8_t clk, uint8_t mosi, uint8_t miso){
+	CLOCK = clk;
+	DWRITE = mosi;
+	DREAD = miso;
+	setup();
+}
+
 uint8_t SPI_nrf24::spi_shift(uint8_t data_write)
 {
   //return SPI.transfer(data_write);
@@ -53,6 +60,13 @@ uint8_t SPI_nrf24::spi_shift(uint8_t data_write)
 void SPI_nrf24::setup(void){
 	wiringPiSetup();
 	wiringPiSPISetup(0, 500000);
+}
+
+void SPI_nrf24::setup(uint8_t clk, uint8_t mosi, uint8_t miso){
+	CLOCK = clk;
+	DWRITE = mosi;
+	DREAD = miso;
+	setup();
 }
 
 uint8_t SPI_nrf24::spi_shift(uint8_t data_write){
