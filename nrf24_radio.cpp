@@ -84,6 +84,10 @@ uint8_t nrf24_radio::read_payload(uint8_t* read_buffer, uint8_t num_bytes){
 	return status_data;
 }
 
+uint8_t nrf24_radio::read_register(uint8_t reg){
+	return radio.read_register(reg, status_address);
+}
+
 void nrf24_radio::setup(uint8_t csn, uint8_t ce){
 
 	radio.setup(csn, ce);
@@ -121,25 +125,25 @@ void nrf24_radio::init(void){
 	radio.write_CE(0);
   	radio.write_CSN(1);
 
-	powerOFF();
 	refresh();
+	write_register(0x00, 0x00);//powerOFF();
+	write_register(0x00, 0x0F);//powerON();
+  	delay(2);
+
+  	get_status();
+  	status_data |= 0x70;
+  	write_register(0x07, status_data);
+
+	radio.write_payload(tx_buffer, 32, status_address);
 
   	flush_RX_buffer();
   	flush_TX_buffer();
-
-  	powerON();
-  	delay(200);
-
-	radio.write_payload(tx_buffer, 32, status_address);
 }
 
-uint8_t nrf24_radio::read_register(uint8_t reg){
-	return radio.read_register(reg, status_address);
-}
-
-void nrf24_radio::receiver_start(void){
+uint8_t nrf24_radio::receiver_start(void){
 
 	uint8_t data = 0;
+	uint8_t rec_status = 5;
 
     	//clear buffers
     	radio.write_CE(0);
@@ -147,17 +151,21 @@ void nrf24_radio::receiver_start(void){
 
 	data = data + (crc_en * 0x08);
 	data = data + (crc_bytes * 0x04);
-	data = data + 0x31;  //disables TX IRQ and enables PRX
+	data = data + 0x33;  //disables TX IRQ and enables PRX
 
     	//get in RX mode
 	if(!use_IRQ){
 		data = data + 0x40;
 	}
+	//data = 0x3F;
 	write_register(0x00, data);
-
     	powerON();
+	rec_status = read_register(0x00);
+
     	radio.write_CE(1);
     	delay(200);
+
+	return rec_status;
 }
 
 void nrf24_radio::receiver_stop(void){
@@ -203,7 +211,7 @@ uint8_t nrf24_radio::get_pipe_numbytes(uint8_t* pipe, uint8_t* bytes){
 	get_status();
 	*pipe = (status_data & 0x0E)/2;
 
-	*bytes = radio.read_register(*pipe, status_address);
+	*bytes = radio.read_register(*pipe + 0x11, status_address);
 	return status_data;
 }
 

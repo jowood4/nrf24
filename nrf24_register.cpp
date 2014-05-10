@@ -81,7 +81,7 @@ uint8_t nrf24_register::read_register(uint8_t address, uint8_t *status){
  	return data_read;
 }
 
-uint8_t* nrf24_register::read_payload(uint8_t num_bytes, uint8_t *payload_address, uint8_t *status){
+uint8_t* nrf24_register::read_payload(uint8_t num_bytes, uint8_t *data, uint8_t *status){
 
  	uint8_t command = 0x61;
 
@@ -89,12 +89,12 @@ uint8_t* nrf24_register::read_payload(uint8_t num_bytes, uint8_t *payload_addres
 
  	*status = spi_shift(command);
  	for(uint8_t j=0;j<num_bytes;j++){
-	 	payload_address[j] = spi_shift(0);
+	 	data[j] = spi_shift(0);
 	}
 
  	SPI_nrf.write_pin(_CSN, 1);
 
- 	return payload_address;
+ 	return data;
 }
 
 

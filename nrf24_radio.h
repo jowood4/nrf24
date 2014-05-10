@@ -19,7 +19,7 @@ class nrf24_radio{
 	//High level functions
 	uint8_t receiver_mode(void);
 	void receiver_stop(void);
-	void receiver_start(void);
+	uint8_t receiver_start(void);
 	uint8_t transmitter_mode(void);
 
 	//Radio commands
