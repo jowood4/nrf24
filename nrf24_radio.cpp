@@ -252,9 +252,9 @@ uint8_t nrf24_radio::transmitter_mode(void){
 	}
 
         get_status();
-        if((status_data & 0x10) == 0){
+        if((status_data & 0x10) == 0x10){
             transmit_status = 1;
-        }else if((status_data & 0x20) == 0){
+        }else if((status_data & 0x20) == 0x20){
             transmit_status = 2;
         }
 
