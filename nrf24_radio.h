@@ -1,7 +1,3 @@
-//#ifdef __cplusplus
-//extern "C" {
-//#endif
-
 #ifndef NRF24_RADIO_H
 #define NRF24_RADIO_H
 
@@ -95,7 +91,3 @@ class nrf24_radio{
 };
 
 #endif
-
-//#ifdef __cplusplus
-//}
-//#endif

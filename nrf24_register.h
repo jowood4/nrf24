@@ -2,16 +2,7 @@
 #define NRF24_REGISTER_H
 
 #include "stdint.h"
-
-#define NRF_TRINKET 1
-
-#if defined(NRF_TRINKET)
-#include "SPI_trinket.h"
-#elif defined(NRF_ARDUINO)
-#include "SPI_arduino.h"
-#elif defined(NRF_RASP_PI)
-#include "SPI_rasp_pi.h"
-#endif
+#include "SPI_nrf24.h"
 
 class nrf24_register{
 
@@ -39,14 +30,7 @@ class nrf24_register{
 	uint8_t read_IRQ(void);
 
    private:
-		
-	#if defined(NRF_TRINKET)
-		SPI_trinket SPI_nrf;
-	#elif defined(NRF_ARDUINO)
-		SPI_arduino SPI_nrf;
-        #elif defined(NRF_RASP_PI)
-               SPI_rasp_pi SPI_nrf;
-	#endif
+	SPI_nrf24 SPI_nrf;
    
     	uint8_t _CE;
     	uint8_t _CSN;

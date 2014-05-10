@@ -26,7 +26,7 @@ void nrf24_register::setup(uint8_t csn, uint8_t ce, uint8_t irq){
 }
 
 void nrf24_register::setup(uint8_t csn, uint8_t ce, uint8_t clk, uint8_t mosi, uint8_t miso){
-  	SPI_nrf.setup();
+  	SPI_nrf.setup(clk, mosi, miso);
         _CSN = csn;
         _CE = ce;
 	_CLK = clk;
@@ -41,7 +41,7 @@ void nrf24_register::setup(uint8_t csn, uint8_t ce, uint8_t clk, uint8_t mosi, u
 }
 
 void nrf24_register::setup(uint8_t csn, uint8_t ce, uint8_t clk, uint8_t mosi, uint8_t miso, uint8_t irq){
-  	SPI_nrf.setup();
+  	SPI_nrf.setup(clk, mosi, miso);
         _CSN = csn;
         _CE = ce;
 	_CLK = clk;
