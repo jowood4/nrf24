@@ -88,27 +88,36 @@ void nrf24_radio::setup(uint8_t csn, uint8_t ce){
 
 	radio.setup(csn, ce);
 	use_IRQ = 0;
-	radio.write_CE(0);
-  	radio.write_CSN(1);
 
-	powerOFF();
-	refresh();
+	init();
+}
 
-  	flush_RX_buffer();
-  	flush_TX_buffer();
+void nrf24_radio::setup(uint8_t csn, uint8_t ce, uint8_t clk, uint8_t mosi, uint8_t miso){
 
-  	powerON();
-  	delay(2);
+	radio.setup(csn, ce, clk, mosi, miso);
+	use_IRQ = 0;
 
-	//address_array = radio.read_rw_address(0x0A, address_array, status_address);
-
-	radio.write_payload(tx_buffer, 32, status_address);
+	init();
 }
 
 void nrf24_radio::setup(uint8_t csn, uint8_t ce, uint8_t irq){
 
 	radio.setup(csn, ce, irq);
 	use_IRQ = 1;
+
+	init();
+}
+
+void nrf24_radio::setup(uint8_t csn, uint8_t ce, uint8_t clk, uint8_t mosi, uint8_t miso, uint8_t irq){
+
+	radio.setup(csn, ce, clk, mosi, miso, irq);
+	use_IRQ = 1;
+
+	init();
+}
+
+void nrf24_radio::init(void){
+
 	radio.write_CE(0);
   	radio.write_CSN(1);
 
