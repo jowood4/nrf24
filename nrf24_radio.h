@@ -20,7 +20,7 @@ class nrf24_radio{
 	uint8_t receiver_mode(void);
 	void receiver_stop(void);
 	void receiver_start(void);
-	void transmitter_mode(void);
+	uint8_t transmitter_mode(void);
 
 	//Radio commands
 	uint8_t read_register(uint8_t reg);

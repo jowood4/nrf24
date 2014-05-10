@@ -128,7 +128,7 @@ void nrf24_radio::init(void){
   	flush_TX_buffer();
 
   	powerON();
-  	delay(2);
+  	delay(200);
 
 	radio.write_payload(tx_buffer, 32, status_address);
 }
@@ -207,13 +207,18 @@ uint8_t nrf24_radio::get_pipe_numbytes(uint8_t* pipe, uint8_t* bytes){
 	return status_data;
 }
 
-void nrf24_radio::transmitter_mode(void){
+uint8_t nrf24_radio::transmitter_mode(void){
 
 	uint8_t data = 0;
+        uint8_t irq_status;
+        uint8_t transmit_status = 0;
+
+        powerON();
+        delay(100);
 
 	data = data + (crc_en * 0x08);
 	data = data + (crc_bytes * 0x04);
-	data = data + 0x40;  //disables RX IRQ and enables PTX
+	data = data + 0x42;  //disables RX IRQ and enables PTX
 
     	//get in RX mode
 	if(!use_IRQ){
@@ -226,27 +231,36 @@ void nrf24_radio::transmitter_mode(void){
 
 	write_register(0x00, data);
 
-	powerON();
 	radio.write_CE(1);
-	delay(50);
+	delay(100);
 	
 	if(use_IRQ){
-		while(!radio.read_IRQ())
+                irq_status = radio.read_IRQ();
+		while(irq_status == 1)
 		{
-			delay(5);
+                        irq_status = radio.read_IRQ();
+			delay(100);
 		}
 	}
 	else{
 		get_status();
-		while(((status_data & 0x20) == 0)&&((status_data & 0x10) == 0))
+		while((status_data & 0x30) == 0)
 		{
 			get_status();
-			delay(5);
+			delay(100);
 		}
 	}
 
+        get_status();
+        if((status_data & 0x10) == 0){
+            transmit_status = 1;
+        }else if((status_data & 0x20) == 0){
+            transmit_status = 2;
+        }
+
 	radio.write_CE(0);	
 	flush_TX_buffer();
+        return transmit_status;
 }
 
 uint8_t nrf24_radio::get_status(void){
