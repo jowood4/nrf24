@@ -1,16 +1,22 @@
 #ifndef SPI_nrf24_h
 #define SPI_nrf24_h
 
-#include <stdint.h>
+#define BIT_BANG 1
 
-#define NRF_TRINKET 1
+#include <stdint.h>
 
 #if defined(NRF_RASP_PI)
 
 #include <wiringPi.h>
 #include <wiringPiSPI.h>
 
-#elif defined(NRF_ARDUINO)
+#else
+
+#if defined(BIT_BANG)
+#include "Arduino.h"
+#endif
+
+#if defined(NRF_ARDUINO)
 
 #if defined(ARDUINO) && ARDUINO >= 100
 #include "Arduino.h"
@@ -30,22 +36,39 @@
 #include "WProgram.h"
 #endif
 
-#endif
+#include <stdint.h>
+#include <avr/io.h>
+#include <util/atomic.h>
 
+#define SPI_DDR_PORT DDRB
+#define USCK_DD_PIN DDB2
+#define DO_DD_PIN DDB1
+#define DI_DD_PIN DDB0
+
+#define SPI_MODE0 0x00
+#define SPI_MODE1 0x04
+
+#endif
+#endif
 
 class SPI_nrf24
 {
 public:
-      	void setup(void);
+	#if defined(BIT_BANG)
 	void setup(uint8_t clk, uint8_t mosi, uint8_t miso);
+	#else
+	void setup(void);
+	#endif
 	void set_pinMode(uint8_t pin, uint8_t direction);
       	uint8_t spi_shift(uint8_t data_write);
 	void write_pin(uint8_t pin, uint8_t val);
 	uint8_t read_pin(uint8_t pin);
-private:
+//private:
+	#if defined(BIT_BANG)
 	uint8_t CLOCK;
 	uint8_t DWRITE;
 	uint8_t DREAD;
+	#endif
 };
 
 #endif

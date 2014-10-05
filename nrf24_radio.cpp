@@ -36,6 +36,44 @@ nrf24_radio::nrf24_radio(void){
 	}
 }
 
+#if defined BIT_BANG
+
+void nrf24_radio::setup(uint8_t csn, uint8_t ce, uint8_t clk, uint8_t mosi, uint8_t miso){
+
+	radio.setup(csn, ce, clk, mosi, miso);
+	use_IRQ = 0;
+
+	init();
+}
+
+void nrf24_radio::setup(uint8_t csn, uint8_t ce, uint8_t clk, uint8_t mosi, uint8_t miso, uint8_t irq){
+
+	radio.setup(csn, ce, clk, mosi, miso, irq);
+	use_IRQ = 1;
+
+	init();
+}
+
+#else
+
+void nrf24_radio::setup(uint8_t csn, uint8_t ce){
+
+	radio.setup(csn, ce);
+	use_IRQ = 0;
+
+	init();
+}
+
+void nrf24_radio::setup(uint8_t csn, uint8_t ce, uint8_t irq){
+
+	radio.setup(csn, ce, irq);
+	use_IRQ = 1;
+
+	init();
+}
+
+#endif
+
 uint8_t nrf24_radio::refresh(void){
 
   //radio.write_register(0x01, 0x01, status_address); //auto_ack
@@ -53,7 +91,7 @@ uint8_t nrf24_radio::refresh(void){
 	setup_RF_param();
 	setup_transmit_address();
 	setup_receive_address();
-	setup_data_width();
+	return setup_data_width();
 }
 
 
@@ -86,38 +124,6 @@ uint8_t nrf24_radio::read_payload(uint8_t* read_buffer, uint8_t num_bytes){
 
 uint8_t nrf24_radio::read_register(uint8_t reg){
 	return radio.read_register(reg, status_address);
-}
-
-void nrf24_radio::setup(uint8_t csn, uint8_t ce){
-
-	radio.setup(csn, ce);
-	use_IRQ = 0;
-
-	init();
-}
-
-void nrf24_radio::setup(uint8_t csn, uint8_t ce, uint8_t clk, uint8_t mosi, uint8_t miso){
-
-	radio.setup(csn, ce, clk, mosi, miso);
-	use_IRQ = 0;
-
-	init();
-}
-
-void nrf24_radio::setup(uint8_t csn, uint8_t ce, uint8_t irq){
-
-	radio.setup(csn, ce, irq);
-	use_IRQ = 1;
-
-	init();
-}
-
-void nrf24_radio::setup(uint8_t csn, uint8_t ce, uint8_t clk, uint8_t mosi, uint8_t miso, uint8_t irq){
-
-	radio.setup(csn, ce, clk, mosi, miso, irq);
-	use_IRQ = 1;
-
-	init();
 }
 
 void nrf24_radio::init(void){
@@ -367,6 +373,7 @@ uint8_t nrf24_radio::setup_data_width(void){
 	radio.write_register(0x14, data_width[3], status_address);
 	radio.write_register(0x15, data_width[4], status_address);
 	radio.write_register(0x16, data_width[5], status_address);
+	return status_data;
 }
 
 void nrf24_radio::write_array(uint8_t* array, uint8_t index, uint8_t data){

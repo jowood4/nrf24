@@ -1,6 +1,8 @@
 #ifndef NRF24_RADIO_H
 #define NRF24_RADIO_H
 
+#define BIT_BANG 1
+
 #include "nrf24_register.h"
 #include "stdint.h"
 
@@ -10,10 +12,13 @@ class nrf24_radio{
 	nrf24_radio();
 
 	//Setup functions
-	void setup(uint8_t csn, uint8_t ce);
-	void setup(uint8_t csn, uint8_t ce, uint8_t irq);
+	#if defined BIT_BANG
 	void setup(uint8_t csn, uint8_t ce, uint8_t clk, uint8_t mosi, uint8_t miso);
 	void setup(uint8_t csn, uint8_t ce, uint8_t clk, uint8_t mosi, uint8_t miso, uint8_t irq);
+	#else
+	void setup(uint8_t csn, uint8_t ce);
+	void setup(uint8_t csn, uint8_t ce, uint8_t irq);
+	#endif
 	void init(void);
 
 	//High level functions
@@ -79,7 +84,7 @@ class nrf24_radio{
 	uint8_t receive_address5[5];
 	uint8_t data_width[6];
 
-  private:
+  //private:
 
 	//uint8_t *address_array;
 	uint8_t byteread;

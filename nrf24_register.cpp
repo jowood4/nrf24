@@ -7,24 +7,7 @@ nrf24_register::nrf24_register(){
 
 }
 
-void nrf24_register::setup(uint8_t csn, uint8_t ce){
-  	SPI_nrf.setup();
-        _CSN = csn;
-        _CE = ce;
-        SPI_nrf.set_pinMode(_CSN, OUTPUT);
-        SPI_nrf.set_pinMode(_CE, OUTPUT);
-}
-
-void nrf24_register::setup(uint8_t csn, uint8_t ce, uint8_t irq){
-  	SPI_nrf.setup();
-        _CSN = csn;
-        _CE = ce;
-	_IRQ = irq;
-        SPI_nrf.set_pinMode(_CSN, OUTPUT);
-        SPI_nrf.set_pinMode(_CE, OUTPUT);
-	SPI_nrf.set_pinMode(_IRQ, INPUT);
-}
-
+#if defined BIT_BANG
 void nrf24_register::setup(uint8_t csn, uint8_t ce, uint8_t clk, uint8_t mosi, uint8_t miso){
   	SPI_nrf.setup(clk, mosi, miso);
         _CSN = csn;
@@ -37,7 +20,6 @@ void nrf24_register::setup(uint8_t csn, uint8_t ce, uint8_t clk, uint8_t mosi, u
 	SPI_nrf.set_pinMode(_CLK, OUTPUT);
 	SPI_nrf.set_pinMode(_MOSI, OUTPUT);
 	SPI_nrf.set_pinMode(_MISO, INPUT);
-	SPI_nrf.set_pinMode(_IRQ, INPUT);
 }
 
 void nrf24_register::setup(uint8_t csn, uint8_t ce, uint8_t clk, uint8_t mosi, uint8_t miso, uint8_t irq){
@@ -55,6 +37,25 @@ void nrf24_register::setup(uint8_t csn, uint8_t ce, uint8_t clk, uint8_t mosi, u
 	SPI_nrf.set_pinMode(_MISO, INPUT);
 	SPI_nrf.set_pinMode(_IRQ, INPUT);
 }
+#else
+void nrf24_register::setup(uint8_t csn, uint8_t ce){
+  	SPI_nrf.setup();
+        _CSN = csn;
+        _CE = ce;
+        SPI_nrf.set_pinMode(_CSN, OUTPUT);
+        SPI_nrf.set_pinMode(_CE, OUTPUT);
+}
+
+void nrf24_register::setup(uint8_t csn, uint8_t ce, uint8_t irq){
+  	SPI_nrf.setup();
+        _CSN = csn;
+        _CE = ce;
+	_IRQ = irq;
+        SPI_nrf.set_pinMode(_CSN, OUTPUT);
+        SPI_nrf.set_pinMode(_CE, OUTPUT);
+	SPI_nrf.set_pinMode(_IRQ, INPUT);
+}
+#endif
 
 void nrf24_register::write_CSN(uint8_t num){
  	SPI_nrf.write_pin(_CSN, num);
@@ -122,14 +123,16 @@ void nrf24_register::set_rw_address(uint8_t address, uint8_t *data, uint8_t num_
  	*status = spi_shift(address);
 
  	for(uint8_t i = 0; i<num_bytes; i++){
- 		SPI_nrf.spi_shift(*data++);
+ 		SPI_nrf.spi_shift(*data);
+		data++;
+
 	}
 
  	SPI_nrf.write_pin(_CSN, 1);
 
 }
 
-uint8_t* nrf24_register::read_rw_address(uint8_t address, uint8_t *address_address, uint8_t *status){
+uint8_t* nrf24_register::read_rw_address(uint8_t address, uint8_t* rw_address, uint8_t *status){
 
  	address &= 0x1F;
 
@@ -138,12 +141,14 @@ uint8_t* nrf24_register::read_rw_address(uint8_t address, uint8_t *address_addre
  	*status = spi_shift(address);
 
  	for(uint8_t i = 0; i<5; i++){
-   		address_address[i] = spi_shift(0x00);
+   		*rw_address = spi_shift(0x00);
+		rw_address++;
 	}
+	rw_address -= 5;
 
  	SPI_nrf.write_pin(_CSN, 1);
 
- 	return address_address;
+ 	return rw_address;
 }
 
 
